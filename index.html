@@ -43,7 +43,13 @@
         .calendar-day.selected { background:var(--border-active); color:#fff; }
         .calendar-day.other-month { color:rgba(255,255,255,0.15); pointer-events:none; }
         .calendar-day.feriado { background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.5); }
+        .calendar-day.comemorativa { background:rgba(244,114,182,0.2); color:#f472b6; border:1px solid rgba(244,114,182,0.5); }
+        .calendar-day.feriado.today { border:2px solid #fbbf24; }
+        .calendar-day.comemorativa.today { border:2px solid #f472b6; }
+        .calendar-day.feriado.selected { background:#fbbf24; color:#000; }
+        .calendar-day.comemorativa.selected { background:#f472b6; color:#000; }
         .feriado-info { margin-top:4px; font-size:0.7rem; color:#fbbf24; text-align:center; min-height:16px; }
+        .comemorativa-info { margin-top:2px; font-size:0.7rem; color:#f472b6; text-align:center; min-height:16px; }
         select { width:100%; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:#fff; font-size:0.85rem; cursor:pointer; }
         .funcionarios-dia-lista, .funcionarios-sem-folga-lista { margin-top:10px; max-height:150px; overflow-y:auto; }
         .funcionario-dia-item, .funcionario-sem-folga-item { padding:6px 10px; margin-bottom:4px; background:rgba(255,255,255,0.03); border-radius:6px; font-size:0.8rem; border-left:3px solid var(--border-active); }
@@ -119,6 +125,7 @@
             <div class="calendar-grid" id="calendarGrid"></div>
             <div class="dia-semana-indicator" id="diaSemanaIndicador"></div>
             <div class="feriado-info" id="feriadoInfo"></div>
+            <div class="comemorativa-info" id="comemorativaInfo"></div>
         </div>
         <div class="dia-selector-section">
             <label>🏠 Quem está na casa?</label>
@@ -215,9 +222,56 @@
     function getTemaAtivo() { return escalas[escalaAtiva]?.tema || 'preto'; }
     function escHtml(str) { var d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
 
+    // Datas especiais: feriados + comemorativas
     function pascoa(ano) { var a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1; return new Date(ano,month-1,day); }
-    function feriados(ano) { var p=pascoa(ano),c=new Date(p); c.setDate(c.getDate()-47); var cc=new Date(p); cc.setDate(cc.getDate()+60); return [{d:1,m:1,n:'Confraternização Universal'},{d:21,m:4,n:'Tiradentes'},{d:1,m:5,n:'Dia do Trabalho'},{d:7,m:9,n:'Independência do Brasil'},{d:12,m:10,n:'Nossa Sra. Aparecida'},{d:2,m:11,n:'Finados'},{d:15,m:11,n:'Proclamação da República'},{d:25,m:12,n:'Natal'},{d:2,m:7,n:'Independência da Bahia'},{d:2,m:2,n:'Nossa Sra. Navegantes'},{d:29,m:3,n:'Fundação de Salvador'},{d:4,m:12,n:'Santa Bárbara'},{d:c.getDate(),m:c.getMonth()+1,n:'Carnaval'},{d:p.getDate(),m:p.getMonth()+1,n:'Páscoa'},{d:cc.getDate(),m:cc.getMonth()+1,n:'Corpus Christi'}]; }
-    function obterFeriado(dt) { var fs=feriados(dt.getFullYear()); for(var i=0;i<fs.length;i++) if(fs[i].d===dt.getDate()&&fs[i].m===dt.getMonth()+1) return fs[i]; return null; }
+    function segundoDomingo(mes, ano) { var d=new Date(ano,mes-1,1); var diaSemana=d.getDay(); var diasAteDomingo=diaSemana===0?0:7-diaSemana; var segundoDom=1+diasAteDomingo+7; return segundoDom; }
+
+    function gerarFeriados(ano) {
+        var p=pascoa(ano),c=new Date(p); c.setDate(c.getDate()-47);
+        var corpus=new Date(p); corpus.setDate(corpus.getDate()+60);
+        return [
+            {dia:1,mes:1,nome:'Confraternização Universal',tipo:'feriado'},
+            {dia:21,mes:4,nome:'Tiradentes',tipo:'feriado'},
+            {dia:1,mes:5,nome:'Dia do Trabalho',tipo:'feriado'},
+            {dia:7,mes:9,nome:'Independência do Brasil',tipo:'feriado'},
+            {dia:12,mes:10,nome:'Nossa Sra. Aparecida',tipo:'feriado'},
+            {dia:2,mes:11,nome:'Finados',tipo:'feriado'},
+            {dia:15,mes:11,nome:'Proclamação da República',tipo:'feriado'},
+            {dia:25,mes:12,nome:'Natal',tipo:'feriado'},
+            {dia:2,mes:7,nome:'Independência da Bahia',tipo:'feriado'},
+            {dia:2,mes:2,nome:'Nossa Sra. dos Navegantes',tipo:'feriado'},
+            {dia:29,mes:3,nome:'Fundação de Salvador',tipo:'feriado'},
+            {dia:4,mes:12,nome:'Santa Bárbara',tipo:'feriado'},
+            {dia:c.getDate(),mes:c.getMonth()+1,nome:'Carnaval',tipo:'feriado'},
+            {dia:p.getDate(),mes:p.getMonth()+1,nome:'Páscoa',tipo:'feriado'},
+            {dia:corpus.getDate(),mes:corpus.getMonth()+1,nome:'Corpus Christi',tipo:'feriado'}
+        ];
+    }
+
+    function gerarDatasComemorativas(ano) {
+        var diaMaes = segundoDomingo(5, ano);
+        var diaPais = segundoDomingo(8, ano);
+        return [
+            {dia:diaMaes,mes:5,nome:'Dia das Mães',tipo:'comemorativa'},
+            {dia:12,mes:6,nome:'Dia dos Namorados',tipo:'comemorativa'},
+            {dia:20,mes:7,nome:'Dia do Amigo',tipo:'comemorativa'},
+            {dia:diaPais,mes:8,nome:'Dia dos Pais',tipo:'comemorativa'},
+            {dia:15,mes:10,nome:'Dia do Professor',tipo:'comemorativa'},
+            {dia:28,mes:10,nome:'Dia do Servidor Público',tipo:'comemorativa'},
+            {dia:31,mes:10,nome:'Halloween',tipo:'comemorativa'},
+            {dia:24,mes:12,nome:'Véspera de Natal',tipo:'comemorativa'},
+            {dia:31,mes:12,nome:'Réveillon',tipo:'comemorativa'}
+        ];
+    }
+
+    function obterDataEspecial(date) {
+        var feriados = gerarFeriados(date.getFullYear());
+        var comemorativas = gerarDatasComemorativas(date.getFullYear());
+        var f = feriados.find(x=>x.dia===date.getDate() && x.mes===date.getMonth()+1);
+        if (f) return f;
+        var c = comemorativas.find(x=>x.dia===date.getDate() && x.mes===date.getMonth()+1);
+        return c || null;
+    }
 
     function carregar() {
         try {
@@ -318,17 +372,23 @@
         for(var i=firstDay-1;i>=0;i--){ var div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=prevDays-i; grid.appendChild(div); }
         for(let day=1;day<=daysInMonth;day++){
             let date=new Date(y,m,day), dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-            let feriado=obterFeriado(date), div=document.createElement('div'); div.className='calendar-day'; div.textContent=day;
+            let especial=obterDataEspecial(date), div=document.createElement('div'); div.className='calendar-day'; div.textContent=day;
             if(dateStr===todayStr) div.classList.add('today');
             if(dateStr===selStr) div.classList.add('selected');
-            if(feriado){ div.classList.add('feriado'); div.title=feriado.n; }
+            if(especial){
+                if(especial.tipo==='feriado') div.classList.add('feriado');
+                else if(especial.tipo==='comemorativa') div.classList.add('comemorativa');
+                div.title=especial.nome;
+            }
             div.addEventListener('click',function(){ selectedDate=new Date(y,m,day); renderizarTudo(); });
             grid.appendChild(div);
         }
         var total=firstDay+daysInMonth, rem=7-(total%7);
         if(rem<7) for(var i=1;i<=rem;i++){ var div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=i; grid.appendChild(div); }
-        var fi=document.getElementById('feriadoInfo'), fsel=obterFeriado(selectedDate);
-        if(fi) fi.textContent = fsel?'🏖️ '+fsel.n:'';
+        var espSel=obterDataEspecial(selectedDate);
+        var fi=document.getElementById('feriadoInfo'), ci=document.getElementById('comemorativaInfo');
+        if(fi) fi.textContent = (espSel && espSel.tipo==='feriado') ? '🏖️ '+espSel.nome : '';
+        if(ci) ci.textContent = (espSel && espSel.tipo==='comemorativa') ? '🎉 '+espSel.nome : '';
     }
     function atualizarDiaCalendario(){
         var ds=DIAS[selectedDate.getDay()===0?6:selectedDate.getDay()-1]; diaSelecionadoLista=ds;

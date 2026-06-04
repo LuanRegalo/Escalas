@@ -3,31 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala de Trabalho · Gestão Profissional</title>
+    <title>Escala de Trabalho</title>
     <style>
         :root {
             --bg-base: #0a0a0a; --bg-sidebar: #111111; --bg-card: #1a1a1a; --bg-table: #1a1a1a;
-            --bg-input: #2a2a2a; --color-primary: #6b7280; --color-primary-light: #9ca3af;
-            --color-accent: #6b7280; --gradient-primary: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
+            --bg-input: #2a2a2a; --color-primary: #6b7280; --gradient-primary: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
             --gradient-sidebar: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
             --text-primary: #f5f5f5; --text-secondary: #a0a0a0; --text-muted: #707070;
             --border-subtle: rgba(255,255,255,0.08); --border-active: #6b7280;
             --nav-active-bg: rgba(255,255,255,0.08); --nav-hover-bg: rgba(255,255,255,0.05);
             --cell-hover-bg: rgba(255,255,255,0.08); --cell-hover-border: #6b7280;
-            --cell-hover-shadow: rgba(255,255,255,0.08); --weekend-col-text: #d1d5db;
-            --weekend-bg: rgba(30,30,30,0.5); --weekend-header-bg: rgba(30,30,30,0.9);
-            --weekend-header-border: rgba(255,255,255,0.15);
+            --weekend-col-text: #d1d5db; --weekend-bg: rgba(30,30,30,0.5);
+            --weekend-header-bg: rgba(30,30,30,0.9); --weekend-header-border: rgba(255,255,255,0.15);
             --shadow-card: 0 8px 32px rgba(0,0,0,0.6); --radius-lg: 16px; --radius-md: 12px; --radius-sm: 8px;
-            --transition: 0.25s cubic-bezier(0.4,0,0.2,1); --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --transition: 0.25s; --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font-sans); background:var(--bg-base); color:var(--text-primary); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:16px; transition:background 0.4s; }
+        body { font-family:var(--font-sans); background:var(--bg-base); color:var(--text-primary); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:16px; }
         .app-shell { display:flex; width:100%; max-width:1500px; min-height:90vh; background:rgba(20,20,20,0.6); backdrop-filter:blur(18px); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card), 0 0 0 1px var(--border-subtle); }
         .sidebar { width:300px; background:var(--gradient-sidebar); padding:32px 20px 20px; display:flex; flex-direction:column; border-right:1px solid var(--border-subtle); flex-shrink:0; overflow-y:auto; }
         .sidebar-header { margin-bottom:24px; }
         .sidebar-logo { font-size:1.6rem; font-weight:800; color:#fff; }
         .sidebar-nav { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
-        .nav-item { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; color:var(--text-secondary); cursor:pointer; transition:all var(--transition); border:1px solid transparent; background:transparent; font-family:var(--font-sans); }
+        .nav-item { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; color:var(--text-secondary); cursor:pointer; transition:all var(--transition); border:1px solid transparent; background:transparent; }
         .nav-item:hover { background:var(--nav-hover-bg); border-color:rgba(255,255,255,0.15); color:#fff; }
         .nav-item.active { background:var(--nav-active-bg); border-color:var(--border-active); color:#fff; }
         .badge { margin-left:auto; background:rgba(255,255,255,0.15); color:#f5f5f5; font-size:0.7rem; padding:2px 10px; border-radius:20px; }
@@ -46,31 +44,32 @@
         .calendar-day.other-month { color:rgba(255,255,255,0.15); pointer-events:none; }
         .calendar-day.feriado { background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.5); }
         .feriado-info { margin-top:4px; font-size:0.7rem; color:#fbbf24; text-align:center; min-height:16px; }
-        select { width:100%; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:#fff; font-family:var(--font-sans); font-size:0.85rem; cursor:pointer; }
+        select { width:100%; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:#fff; font-size:0.85rem; cursor:pointer; }
         .funcionarios-dia-lista, .funcionarios-sem-folga-lista { margin-top:10px; max-height:150px; overflow-y:auto; }
-        .funcionario-dia-item, .funcionario-sem-folga-item { padding:6px 10px; margin-bottom:4px; background:rgba(255,255,255,0.03); border-radius:6px; font-size:0.8rem; border-left:3px solid var(--color-accent); }
+        .funcionario-dia-item, .funcionario-sem-folga-item { padding:6px 10px; margin-bottom:4px; background:rgba(255,255,255,0.03); border-radius:6px; font-size:0.8rem; border-left:3px solid var(--border-active); }
         .funcionario-sem-folga-item.destacado-vermelho { color:#ef4444 !important; background:rgba(239,68,68,0.15); border-left-color:#ef4444; }
         .btn-limpar-vermelhos { background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:2px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer; }
-        .theme-options { display:flex; gap:6px; flex-wrap:wrap; }
+        .theme-options { display:flex; gap:6px; }
         .theme-dot { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
         .theme-dot.active { border-color:#fff; box-shadow:0 0 10px currentColor; }
         .sidebar-footer { margin-top:auto; font-size:0.75rem; color:var(--text-muted); text-align:center; padding-top:16px; border-top:1px solid var(--border-subtle); }
 
         .main-content { flex:1; display:flex; flex-direction:column; padding:28px 24px 20px; overflow-x:hidden; }
-        .escala-title-box { background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px 20px; font-weight:700; font-size:1.1rem; color:#fff; cursor:pointer; }
+        .main-header { margin-bottom:16px; }
+        .header-top { display:flex; justify-content:flex-end; margin-bottom:8px; }
+        .action-buttons { display:flex; gap:6px; }
+        .escala-title-section { width:100%; }
+        .escala-title-box { background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px 20px; font-weight:700; font-size:1.1rem; color:#fff; cursor:pointer; text-align:center; }
         .escala-title-box:hover { border-color:var(--border-active); background:rgba(255,255,255,0.05); }
         .escala-title-input { background:var(--bg-input); border:1px solid var(--border-active); border-radius:var(--radius-sm); padding:10px 16px; font-weight:700; font-size:1.1rem; color:#fff; outline:none; text-align:center; width:100%; }
-        .action-buttons { display:flex; gap:8px; }
-        .btn-minimal { background:transparent; border:1px solid rgba(255,255,255,0.15); color:#aaa; padding:6px 10px; font-size:1rem; border-radius:6px; cursor:pointer; }
-        .btn-minimal:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.3); color:#fff; }
-        .btn-minimal-danger { border-color:rgba(239,68,68,0.3); color:#f87171; }
-        .btn-minimal-danger:hover { background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.6); color:#fca5a5; }
 
-        .btn { padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:0.85rem; cursor:pointer; border:none; transition:all var(--transition); display:inline-flex; align-items:center; gap:6px; }
-        .btn-primary { background:var(--color-primary); color:#fff; }
-        .btn-outline { background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary); }
-        .btn-xs { padding:4px 8px; font-size:0.7rem; }
-        .btn-sm { padding:6px 12px; font-size:0.8rem; }
+        .btn-minimal {
+            background:transparent; border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.25);
+            padding:4px 8px; font-size:0.8rem; border-radius:4px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:2px;
+        }
+        .btn-minimal:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.8); }
+        .btn-minimal-danger { border-color:rgba(239,68,68,0.08); color:rgba(239,68,68,0.3); }
+        .btn-minimal-danger:hover { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3); color:#f87171; }
 
         .table-container { flex:1; overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-table); }
         table { width:100%; border-collapse:collapse; min-width:950px; font-size:0.85rem; }
@@ -87,8 +86,13 @@
         .cell-display.colorido { background-color:var(--cor-func); }
         .edit-inline { display:flex; flex-direction:column; gap:4px; align-items:center; }
         .edit-inline input { width:88px; padding:6px 8px; border:1.5px solid var(--border-active); border-radius:5px; font-size:0.75rem; text-align:center; background:var(--bg-input); color:#fff; }
-        .delete-func-btn { background:none; border:1px solid transparent; color:#8b8b8b; cursor:pointer; font-size:1rem; padding:2px 6px; border-radius:4px; margin-left:auto; }
-        .delete-func-btn:hover { color:#ef4444; background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.4); }
+
+        .delete-func-btn {
+            background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.9rem; padding:2px 4px; border-radius:3px; margin-left:auto; opacity:0; transition:opacity 0.2s, color 0.2s;
+        }
+        tbody tr:hover .delete-func-btn { opacity:1; }
+        .delete-func-btn:hover { color:#ef4444; background:rgba(239,68,68,0.1); }
+
         .cor-btn { background:var(--cor-atual); border:2px solid rgba(255,255,255,0.3); width:28px; height:28px; border-radius:50%; cursor:pointer; }
         .empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); }
 
@@ -97,421 +101,348 @@
         .modal-content { padding:28px; }
         .modal-content h2 { font-size:1.3rem; font-weight:700; margin-bottom:20px; }
         .modal-content input { width:100%; padding:10px 14px; border:1.5px solid var(--border-subtle); border-radius:6px; font-size:0.9rem; background:var(--bg-input); color:#fff; }
-        .modal-flex { display:flex; gap:12px; align-items:center; }
-        .modal-flex>div { flex:1; }
         .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
-
+        .btn { padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer; border:none; }
+        .btn-primary { background:var(--color-primary); color:#fff; }
+        .btn-outline { background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary); }
+        .btn-xs { padding:4px 8px; font-size:0.7rem; }
         .toast { position:fixed; bottom:28px; right:28px; background:var(--bg-card); color:#fff; padding:14px 24px; border-radius:8px; font-weight:600; z-index:999; opacity:0; transform:translateY(20px); transition:0.3s; pointer-events:none; border:1px solid var(--border-active); }
         .toast.show { opacity:1; transform:translateY(0); }
     </style>
 </head>
 <body>
-    <div class="app-shell">
-        <aside class="sidebar">
-            <div class="sidebar-header"><div class="sidebar-logo">Escala</div></div>
-            <div class="sidebar-nav" id="sidebarNav"></div>
-            <div class="calendario-section">
-                <label>📅 Calendário</label>
-                <div class="calendar-header">
-                    <button class="calendar-nav-btn" id="prevMonthBtn">◀</button>
-                    <span class="calendar-month-year" id="calendarMonthYear"></span>
-                    <button class="calendar-nav-btn" id="nextMonthBtn">▶</button>
-                </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
-                <div class="dia-semana-indicator" id="diaSemanaIndicador"></div>
-                <div class="feriado-info" id="feriadoInfo"></div>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo">Escala</div></div>
+        <div class="sidebar-nav" id="sidebarNav"></div>
+        <div class="calendario-section">
+            <label>📅 Calendário</label>
+            <div class="calendar-header">
+                <button class="calendar-nav-btn" id="prevMonthBtn">◀</button>
+                <span class="calendar-month-year" id="calendarMonthYear"></span>
+                <button class="calendar-nav-btn" id="nextMonthBtn">▶</button>
             </div>
-            <div class="dia-selector-section">
-                <label>🏠 Quem está na casa?</label>
-                <select id="diaSelecionado" onchange="atualizarListaDia()">
-                    <option value="seg">Segunda-feira</option><option value="ter">Terça-feira</option><option value="qua">Quarta-feira</option>
-                    <option value="qui">Quinta-feira</option><option value="sex">Sexta-feira</option><option value="sab">Sábado</option><option value="dom">Domingo</option>
-                </select>
-                <div class="funcionarios-dia-lista" id="listaFuncionariosDia"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="dia-semana-indicator" id="diaSemanaIndicador"></div>
+            <div class="feriado-info" id="feriadoInfo"></div>
+        </div>
+        <div class="dia-selector-section">
+            <label>🏠 Quem está na casa?</label>
+            <select id="diaSelecionado" onchange="atualizarListaDia()">
+                <option value="seg">Segunda-feira</option><option value="ter">Terça-feira</option><option value="qua">Quarta-feira</option>
+                <option value="qui">Quinta-feira</option><option value="sex">Sexta-feira</option><option value="sab">Sábado</option><option value="dom">Domingo</option>
+            </select>
+            <div class="funcionarios-dia-lista" id="listaFuncionariosDia"></div>
+        </div>
+        <div class="sem-folga-section">
+            <div class="sem-folga-header">
+                <label>✅ Sem Nenhuma Folga</label>
+                <button class="btn-limpar-vermelhos" onclick="limparDestaquesVermelhos()">🧹 Limpar</button>
             </div>
-            <div class="sem-folga-section">
-                <div class="sem-folga-header">
-                    <label>✅ Sem Nenhuma Folga</label>
-                    <button class="btn-limpar-vermelhos" onclick="limparDestaquesVermelhos()">🧹 Limpar</button>
-                </div>
-                <div class="funcionarios-sem-folga-lista" id="listaFuncionariosSemFolga"></div>
-            </div>
-            <div class="theme-selector">
-                <label>Tema da Escala</label>
-                <div class="theme-options" id="themeOptions">
-                    <div class="theme-dot" data-theme="verde" style="background:#10b981;" title="Verde"></div>
-                    <div class="theme-dot" data-theme="azul" style="background:#3b82f6;" title="Azul"></div>
-                    <div class="theme-dot" data-theme="preto" style="background:#1f1f1f;" title="Preto"></div>
-                </div>
-            </div>
-            <div class="sidebar-footer"><p>Escala · v1.0</p></div>
-        </aside>
-
-        <main class="main-content">
-            <div class="main-header">
-                <div class="escala-title-section">
-                    <div class="escala-title-box" id="escalaTituloDisplay" onclick="iniciarEdicaoTitulo()">
-                        <span id="tituloTexto"></span>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="btn-minimal" onclick="abrirModalAdicionar()" title="Adicionar Funcionário">➕</button>
-                    <button class="btn-minimal btn-minimal-danger" onclick="limparEscalaAtual()" title="Limpar Escala">🗑️</button>
-                </div>
-            </div>
-            <div class="table-container">
-                <table id="tabelaEscala">
-                    <thead><tr><th>Funcionário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th class="weekend-col">Sábado</th><th class="weekend-col">Domingo</th></tr></thead>
-                    <tbody id="corpoTabela"></tbody>
-                </table>
-                <div class="empty-state" id="estadoVazio"><span class="icon">📭</span><p><strong>Nenhum funcionário nesta escala</strong></p><p>Adicione funcionários para começar.</p></div>
-            </div>
-        </main>
-    </div>
-
-    <dialog id="modalAdicionar">
-        <div class="modal-content">
-            <h2>👤 Novo Funcionário</h2>
-            <div style="display:flex; flex-direction:column; gap:16px;">
-                <div>
-                    <label>Nome completo</label>
-                    <input type="text" id="inputNome" placeholder="Ex: Maria Silva" autocomplete="off">
-                </div>
-                <div>
-                    <label>Cor de destaque</label>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <input type="color" id="inputCor" value="#4b5563">
-                        <span style="font-size:0.8rem; color:var(--text-muted);">Fundo das células do funcionário</span>
-                    </div>
-                </div>
-                <p class="modal-hint" style="font-size:0.75rem; color:var(--text-muted);">💡 Após adicionar, clique nas células para definir função e setor.</p>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-outline btn-sm" onclick="fecharModalAdicionar()">Cancelar</button>
-                <button class="btn btn-primary btn-sm" onclick="adicionarFuncionario()">✅ Adicionar</button>
+            <div class="funcionarios-sem-folga-lista" id="listaFuncionariosSemFolga"></div>
+        </div>
+        <div class="theme-selector">
+            <label>Tema da Escala</label>
+            <div class="theme-options" id="themeOptions">
+                <div class="theme-dot" data-theme="verde" style="background:#10b981;" title="Verde"></div>
+                <div class="theme-dot" data-theme="azul" style="background:#3b82f6;" title="Azul"></div>
+                <div class="theme-dot" data-theme="preto" style="background:#1f1f1f;" title="Preto"></div>
             </div>
         </div>
-    </dialog>
-    <div class="toast" id="toast"></div>
+        <div class="sidebar-footer"><p>Escala · v1.0</p></div>
+    </aside>
 
-    <script>
-        (function() {
-            // Verificação inicial (aparece no console F12)
-            console.log('✅ Script carregado com sucesso');
+    <main class="main-content">
+        <div class="main-header">
+            <div class="header-top">
+                <div class="action-buttons">
+                    <button class="btn-minimal" onclick="abrirModalAdicionar()" title="Adicionar Funcionário">+</button>
+                    <button class="btn-minimal btn-minimal-danger" onclick="limparEscalaAtual()" title="Limpar Escala">🗑</button>
+                </div>
+            </div>
+            <div class="escala-title-section">
+                <div class="escala-title-box" id="escalaTituloDisplay" onclick="iniciarEdicaoTitulo()">
+                    <span id="tituloTexto"></span>
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <table id="tabelaEscala">
+                <thead><tr><th>Funcionário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th class="weekend-col">Sábado</th><th class="weekend-col">Domingo</th></tr></thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+            <div class="empty-state" id="estadoVazio"><span class="icon">📭</span><p><strong>Nenhum funcionário nesta escala</strong></p><p>Adicione funcionários para começar.</p></div>
+        </div>
+    </main>
+</div>
 
-            const DIAS_SEMANA = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
-            const NOMES_DIAS = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-            const NOMES_DIAS_CURTOS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            const NUM_ESCALAS = 5;
-            const STORAGE_KEY = 'escala_trabalho_feriados_v5';
+<dialog id="modalAdicionar">
+    <div class="modal-content">
+        <h2>👤 Novo Funcionário</h2>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+            <div><label>Nome completo</label><input type="text" id="inputNome" placeholder="Ex: Maria Silva"></div>
+            <div><label>Cor de destaque</label><div style="display:flex;align-items:center;gap:10px;"><input type="color" id="inputCor" value="#4b5563"><span style="font-size:0.8rem;color:var(--text-muted);">Fundo das células</span></div></div>
+            <p style="font-size:0.75rem;color:var(--text-muted);">💡 Clique nas células para alternar folga. Duplo clique para editar função/setor.</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" onclick="fecharModalAdicionar()">Cancelar</button>
+            <button class="btn btn-primary" onclick="adicionarFuncionario()">✅ Adicionar</button>
+        </div>
+    </div>
+</dialog>
+<div class="toast" id="toast"></div>
 
-            const TEMAS = {
-                verde: { bgBase:'#0a140f', bgSidebar:'#0f1914', bgCard:'#132419', bgTable:'#132419', bgInput:'#1d3324', colorPrimary:'#10b981', gradientPrimary:'linear-gradient(135deg, #059669 0%, #064e3b 100%)', gradientSidebar:'linear-gradient(180deg, #152e21 0%, #0a140f 100%)', borderActive:'#10b981', cellHoverBg:'rgba(16,185,129,0.12)', cellHoverBorder:'#10b981', weekendColText:'#6ee7b7', weekendBg:'rgba(15,30,20,0.5)', weekendHeaderBg:'rgba(15,30,20,0.9)', weekendHeaderBorder:'rgba(16,185,129,0.25)' },
-                azul: { bgBase:'#0a0f1a', bgSidebar:'#0f1629', bgCard:'#141f33', bgTable:'#141f33', bgInput:'#1e2d47', colorPrimary:'#3b82f6', gradientPrimary:'linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%)', gradientSidebar:'linear-gradient(180deg, #162240 0%, #0a0f1a 100%)', borderActive:'#3b82f6', cellHoverBg:'rgba(59,130,246,0.12)', cellHoverBorder:'#3b82f6', weekendColText:'#93c5fd', weekendBg:'rgba(20,30,50,0.5)', weekendHeaderBg:'rgba(20,30,50,0.9)', weekendHeaderBorder:'rgba(59,130,246,0.25)' },
-                preto: { bgBase:'#0a0a0a', bgSidebar:'#111111', bgCard:'#1a1a1a', bgTable:'#1a1a1a', bgInput:'#2a2a2a', colorPrimary:'#6b7280', gradientPrimary:'linear-gradient(135deg, #4b5563 0%, #1f2937 100%)', gradientSidebar:'linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%)', borderActive:'#6b7280', cellHoverBg:'rgba(255,255,255,0.08)', cellHoverBorder:'#6b7280', weekendColText:'#d1d5db', weekendBg:'rgba(30,30,30,0.5)', weekendHeaderBg:'rgba(30,30,30,0.9)', weekendHeaderBorder:'rgba(255,255,255,0.15)' }
-            };
+<script>
+(function() {
+    // CONFIGURAÇÕES
+    const DIAS = ['seg','ter','qua','qui','sex','sab','dom'];
+    const NOMES_DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const NUM_ESCALAS = 5;
+    const STORAGE_KEY = 'escala_trabalho_feriados_v5';
 
-            let escalas = [];
-            let escalaAtivaIndex = 0;
-            let diaSelecionadoLista = 'seg';
-            let selectedDate = new Date();
-            let currentMonth = selectedDate.getMonth();
-            let currentYear = selectedDate.getFullYear();
-            const destaqueVermelho = new Set();
+    const TEMAS = {
+        verde: { bgBase:'#0a140f', bgSidebar:'#0f1914', bgCard:'#132419', bgTable:'#132419', bgInput:'#1d3324', colorPrimary:'#10b981', gradientPrimary:'linear-gradient(135deg, #059669, #064e3b)', gradientSidebar:'linear-gradient(180deg, #152e21, #0a140f)', borderActive:'#10b981', cellHoverBg:'rgba(16,185,129,0.12)', cellHoverBorder:'#10b981', weekendColText:'#6ee7b7', weekendBg:'rgba(15,30,20,0.5)', weekendHeaderBg:'rgba(15,30,20,0.9)', weekendHeaderBorder:'rgba(16,185,129,0.25)' },
+        azul: { bgBase:'#0a0f1a', bgSidebar:'#0f1629', bgCard:'#141f33', bgTable:'#141f33', bgInput:'#1e2d47', colorPrimary:'#3b82f6', gradientPrimary:'linear-gradient(135deg, #2563eb, #1e3a8a)', gradientSidebar:'linear-gradient(180deg, #162240, #0a0f1a)', borderActive:'#3b82f6', cellHoverBg:'rgba(59,130,246,0.12)', cellHoverBorder:'#3b82f6', weekendColText:'#93c5fd', weekendBg:'rgba(20,30,50,0.5)', weekendHeaderBg:'rgba(20,30,50,0.9)', weekendHeaderBorder:'rgba(59,130,246,0.25)' },
+        preto: { bgBase:'#0a0a0a', bgSidebar:'#111111', bgCard:'#1a1a1a', bgTable:'#1a1a1a', bgInput:'#2a2a2a', colorPrimary:'#6b7280', gradientPrimary:'linear-gradient(135deg, #4b5563, #1f2937)', gradientSidebar:'linear-gradient(180deg, #1f1f1f, #0a0a0a)', borderActive:'#6b7280', cellHoverBg:'rgba(255,255,255,0.08)', cellHoverBorder:'#6b7280', weekendColText:'#d1d5db', weekendBg:'rgba(30,30,30,0.5)', weekendHeaderBg:'rgba(30,30,30,0.9)', weekendHeaderBorder:'rgba(255,255,255,0.15)' }
+    };
 
-            function gerarId() { return 'func_' + Date.now() + '_' + Math.random().toString(36).substr(2,7); }
-            function salvarDados() { localStorage.setItem(STORAGE_KEY, JSON.stringify(escalas)); }
-            function getEscalaAtiva() { return escalas[escalaAtivaIndex]?.funcionarios || []; }
-            function getTituloAtivo() { return escalas[escalaAtivaIndex]?.titulo || 'Escala'; }
-            function getTemaAtivo() { return escalas[escalaAtivaIndex]?.tema || 'preto'; }
-            function escapeHtml(str) { const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+    // ESTADO GLOBAL
+    let escalas = [];
+    let escalaAtiva = 0;
+    let diaSelecionadoLista = 'seg';
+    let selectedDate = new Date();
+    let currentMonth = selectedDate.getMonth();
+    let currentYear = selectedDate.getFullYear();
+    const destaqueVermelho = new Set();
 
-            // Feriados
-            function calcularPascoa(ano) { const a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1; return new Date(ano,month-1,day); }
-            function gerarFeriados(ano) { const pascoa=calcularPascoa(ano),carnaval=new Date(pascoa); carnaval.setDate(carnaval.getDate()-47); const corpus=new Date(pascoa); corpus.setDate(corpus.getDate()+60); return [ {dia:1,mes:1,nome:'Confraternização Universal'}, {dia:21,mes:4,nome:'Tiradentes'}, {dia:1,mes:5,nome:'Dia do Trabalho'}, {dia:7,mes:9,nome:'Independência do Brasil'}, {dia:12,mes:10,nome:'Nossa Sra. Aparecida'}, {dia:2,mes:11,nome:'Finados'}, {dia:15,mes:11,nome:'Proclamação da República'}, {dia:25,mes:12,nome:'Natal'}, {dia:2,mes:7,nome:'Independência da Bahia'}, {dia:2,mes:2,nome:'Nossa Sra. dos Navegantes'}, {dia:29,mes:3,nome:'Fundação de Salvador'}, {dia:4,mes:12,nome:'Santa Bárbara'}, {dia:carnaval.getDate(),mes:carnaval.getMonth()+1,nome:'Carnaval'}, {dia:pascoa.getDate(),mes:pascoa.getMonth()+1,nome:'Páscoa'}, {dia:corpus.getDate(),mes:corpus.getMonth()+1,nome:'Corpus Christi'} ]; }
-            function obterFeriado(date) { return gerarFeriados(date.getFullYear()).find(f=>f.dia===date.getDate() && f.mes===date.getMonth()+1); }
+    // UTILITÁRIOS
+    function gerarId() { return 'f'+Date.now()+Math.random().toString(36).substr(2,7); }
+    function salvar() { localStorage.setItem(STORAGE_KEY, JSON.stringify(escalas)); }
+    function getEscalaAtiva() { return escalas[escalaAtiva]?.funcionarios || []; }
+    function getTituloAtivo() { return escalas[escalaAtiva]?.titulo || 'Escala'; }
+    function getTemaAtivo() { return escalas[escalaAtiva]?.tema || 'preto'; }
+    function esc(str) { var d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
 
-            // Inicialização com migração segura
-            function carregarDados() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    let parsed = raw ? JSON.parse(raw) : null;
-                    if (!Array.isArray(parsed)) throw new Error('Inválido');
-                    while (parsed.length < NUM_ESCALAS) parsed.push({ titulo:'Escala '+(parsed.length+1), tema:'preto', funcionarios:[] });
-                    if (parsed.length > NUM_ESCALAS) parsed.splice(NUM_ESCALAS);
-                    escalas = parsed.map((item,i) => ({
-                        titulo: item.titulo || ('Escala '+(i+1)),
-                        tema: item.tema || 'preto',
-                        funcionarios: Array.isArray(item.funcionarios) ? item.funcionarios : []
-                    }));
-                } catch(e) {
-                    iniciarEscalasDemo();
-                }
+    // FERIADOS
+    function pascoa(ano) { var a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1; return new Date(ano,month-1,day); }
+    function feriados(ano) { var p=pascoa(ano),c=new Date(p); c.setDate(c.getDate()-47); var cc=new Date(p); cc.setDate(cc.getDate()+60); return [{d:1,m:1,n:'Confraternização Universal'},{d:21,m:4,n:'Tiradentes'},{d:1,m:5,n:'Dia do Trabalho'},{d:7,m:9,n:'Independência do Brasil'},{d:12,m:10,n:'Nossa Sra. Aparecida'},{d:2,m:11,n:'Finados'},{d:15,m:11,n:'Proclamação da República'},{d:25,m:12,n:'Natal'},{d:2,m:7,n:'Independência da Bahia'},{d:2,m:2,n:'Nossa Sra. Navegantes'},{d:29,m:3,n:'Fundação de Salvador'},{d:4,m:12,n:'Santa Bárbara'},{d:c.getDate(),m:c.getMonth()+1,n:'Carnaval'},{d:p.getDate(),m:p.getMonth()+1,n:'Páscoa'},{d:cc.getDate(),m:cc.getMonth()+1,n:'Corpus Christi'}]; }
+    function obterFeriado(dt) { var fs=feriados(dt.getFullYear()); for(var i=0;i<fs.length;i++) if(fs[i].d===dt.getDate()&&fs[i].m===dt.getMonth()+1) return fs[i]; return null; }
+
+    // INICIALIZAÇÃO
+    function carregar() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            var data = raw ? JSON.parse(raw) : null;
+            if (!Array.isArray(data)) throw new Error('inválido');
+            while(data.length < NUM_ESCALAS) data.push({titulo:'Escala '+(data.length+1), tema:'preto', funcionarios:[]});
+            if(data.length > NUM_ESCALAS) data.splice(NUM_ESCALAS);
+            escalas = data.map((item,i)=>({titulo:item.titulo||('Escala '+(i+1)), tema:item.tema||'preto', funcionarios:Array.isArray(item.funcionarios)?item.funcionarios:[]}));
+        }catch(e){ demo(); }
+    }
+    function demo() {
+        var aD={}, cD={}, rD={};
+        DIAS.forEach((d,i)=>{ aD[d]={funcao:i<5?'Atendente':'',setor:i<5?'Recepção':'',folga:i>=5}; cD[d]={funcao:i<6?'Supervisor':'',setor:i<6?'Logística':'',folga:i===6}; rD[d]={funcao:i<5?'Motorista':'',setor:i<5?'Transporte':'',folga:i>=5}; });
+        escalas=[
+            {titulo:'Setor Administrativo',tema:'azul',funcionarios:[{id:gerarId(),nome:'Ana Costa',cor:'#3b82f6',dias:aD},{id:gerarId(),nome:'Carlos Mendes',cor:'#60a5fa',dias:cD}]},
+            {titulo:'Setor de Transporte',tema:'verde',funcionarios:[{id:gerarId(),nome:'Roberto Alves',cor:'#10b981',dias:rD}]},
+            {titulo:'Escala 3',tema:'preto',funcionarios:[]},{titulo:'Escala 4',tema:'azul',funcionarios:[]},{titulo:'Escala 5',tema:'verde',funcionarios:[]}
+        ];
+        salvar();
+    }
+
+    // APLICAR TEMA
+    function aplicarTema(nome) {
+        var t = TEMAS[nome] || TEMAS['preto'];
+        var r = document.documentElement;
+        r.style.setProperty('--bg-base',t.bgBase); r.style.setProperty('--bg-sidebar',t.bgSidebar); r.style.setProperty('--bg-card',t.bgCard); r.style.setProperty('--bg-table',t.bgTable);
+        r.style.setProperty('--bg-input',t.bgInput); r.style.setProperty('--color-primary',t.colorPrimary); r.style.setProperty('--gradient-primary',t.gradientPrimary);
+        r.style.setProperty('--gradient-sidebar',t.gradientSidebar); r.style.setProperty('--border-active',t.borderActive); r.style.setProperty('--cell-hover-bg',t.cellHoverBg);
+        r.style.setProperty('--cell-hover-border',t.cellHoverBorder); r.style.setProperty('--weekend-col-text',t.weekendColText); r.style.setProperty('--weekend-bg',t.weekendBg);
+        r.style.setProperty('--weekend-header-bg',t.weekendHeaderBg); r.style.setProperty('--weekend-header-border',t.weekendHeaderBorder);
+    }
+
+    // RENDERIZAÇÃO PRINCIPAL
+    function renderizarTudo() {
+        aplicarTema(getTemaAtivo());
+        document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active', d.dataset.theme===getTemaAtivo()));
+        renderizarSidebar();
+        document.getElementById('tituloTexto').textContent = getTituloAtivo();
+        renderizarTabela();
+        renderizarCalendario();
+        atualizarDiaCalendario();
+        renderizarListaSemFolga();
+    }
+
+    function renderizarSidebar() {
+        var nav = document.getElementById('sidebarNav'); nav.innerHTML='';
+        escalas.forEach((esc,i)=>{
+            var btn = document.createElement('button');
+            btn.className = 'nav-item' + (i===escalaAtiva?' active':'');
+            btn.innerHTML = '📅 '+esc(esc.titulo)+' <span class="badge">'+esc.funcionarios.length+'</span>';
+            btn.onclick = function(){ escalaAtiva=i; renderizarTudo(); mostrarToast('📅 '+getTituloAtivo()); };
+            nav.appendChild(btn);
+        });
+    }
+
+    function renderizarTabela() {
+        var tbody = document.getElementById('corpoTabela'), vazio = document.getElementById('estadoVazio');
+        var funcs = getEscalaAtiva();
+        if(!funcs.length){ tbody.innerHTML=''; vazio.style.display='block'; return; }
+        vazio.style.display='none';
+        tbody.innerHTML = funcs.map(f=>{
+            var cor = f.cor||'#4b5563';
+            var diasHtml = DIAS.map((dia,i)=>{
+                var d = f.dias&&f.dias[dia] ? f.dias[dia] : {funcao:'',setor:'',folga:false};
+                var wc = i>=5?' weekend-col':'';
+                if(d.folga) return '<td class="'+wc+'"><div class="cell-display folga" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-folga-badge">🏖️ Folga</span></div></td>';
+                return '<td class="'+wc+'"><div class="cell-display colorido" style="--cor-func:'+cor+'" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')" ondblclick="window.iniciarEdicao(\''+f.id+'\',\''+dia+'\')"><span class="cell-funcao">'+esc(d.funcao||'—')+'</span><span class="cell-setor">'+esc(d.setor||'—')+'</span></div><div class="edit-inline" id="edit-'+f.id+'-'+dia+'" style="display:none;"></div></td>';
+            }).join('');
+            return '<tr><td><div class="cor-container"><button class="cor-btn" style="--cor-atual:'+cor+'" onclick="window.abrirColorPicker(event,\''+f.id+'\')"></button><input type="color" id="colorPicker-'+f.id+'" value="'+cor+'" style="position:absolute;opacity:0;width:0;height:0;" onchange="window.alterarCor(\''+f.id+'\',this.value)"></div><span>'+esc(f.nome)+'</span><button class="delete-func-btn" onclick="window.removerFunc(\''+f.id+'\')">✕</button></td>'+diasHtml+'</tr>';
+        }).join('');
+    }
+
+    function renderizarListaDia() {
+        var container = document.getElementById('listaFuncionariosDia'), dia = diaSelecionadoLista;
+        var trabalhando = getEscalaAtiva().filter(f=>{ var d=f.dias&&f.dias[dia]?f.dias[dia]:{folga:false}; return !d.folga; });
+        container.innerHTML = trabalhando.length ? trabalhando.map(f=>'<div class="funcionario-dia-item">'+esc(f.nome)+'</div>').join('') : '<div class="nenhum-funcionario">Nenhum funcionário na casa</div>';
+    }
+
+    function renderizarListaSemFolga() {
+        var container = document.getElementById('listaFuncionariosSemFolga');
+        var semFolga = getEscalaAtiva().filter(f=>!DIAS.some(d=>{ var dd=f.dias&&f.dias[d]?f.dias[d]:{folga:false}; return dd.folga; }));
+        if(!semFolga.length){ container.innerHTML='<div class="nenhum-funcionario">Todos têm folga</div>'; return; }
+        container.innerHTML = semFolga.map(f=>'<div class="funcionario-sem-folga-item'+(destaqueVermelho.has(f.id)?' destacado-vermelho':'')+'" data-id="'+f.id+'">'+esc(f.nome)+'</div>').join('');
+        container.querySelectorAll('.funcionario-sem-folga-item').forEach(el=>{
+            el.addEventListener('dblclick', function(e){ e.stopPropagation(); var id=this.dataset.id; destaqueVermelho.has(id)?destaqueVermelho.delete(id):destaqueVermelho.add(id); this.classList.toggle('destacado-vermelho'); });
+        });
+    }
+
+    // CALENDÁRIO
+    function renderizarCalendario() {
+        var grid=document.getElementById('calendarGrid'), my=document.getElementById('calendarMonthYear');
+        if(!grid||!my) return;
+        var y=currentYear, m=currentMonth;
+        var firstDay=new Date(y,m,1).getDay(), daysInMonth=new Date(y,m+1,0).getDate();
+        var today=new Date(), todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+        var selStr=selectedDate.getFullYear()+'-'+String(selectedDate.getMonth()+1).padStart(2,'0')+'-'+String(selectedDate.getDate()).padStart(2,'0');
+        my.textContent = MESES[m]+' '+y;
+        grid.innerHTML='';
+        ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d=>{ var div=document.createElement('div'); div.className='calendar-day-name'; div.textContent=d; grid.appendChild(div); });
+        var prevDays=new Date(y,m,0).getDate();
+        for(var i=firstDay-1;i>=0;i--){ var div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=prevDays-i; grid.appendChild(div); }
+        for(var day=1;day<=daysInMonth;day++){
+            var date=new Date(y,m,day), dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+            var feriado=obterFeriado(date), div=document.createElement('div'); div.className='calendar-day'; div.textContent=day;
+            if(dateStr===todayStr) div.classList.add('today');
+            if(dateStr===selStr) div.classList.add('selected');
+            if(feriado){ div.classList.add('feriado'); div.title=feriado.n; }
+            div.addEventListener('click',function(){ selectedDate=new Date(y,m,day); renderizarTudo(); });
+            grid.appendChild(div);
+        }
+        var total=firstDay+daysInMonth, rem=7-(total%7);
+        if(rem<7) for(var i=1;i<=rem;i++){ var div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=i; grid.appendChild(div); }
+        var fi=document.getElementById('feriadoInfo'), fsel=obterFeriado(selectedDate);
+        if(fi) fi.textContent = fsel?'🏖️ '+fsel.n:'';
+    }
+    function atualizarDiaCalendario(){
+        var ds=DIAS[selectedDate.getDay()===0?6:selectedDate.getDay()-1]; diaSelecionadoLista=ds;
+        document.getElementById('diaSelecionado').value=ds;
+        document.getElementById('diaSemanaIndicador').textContent=NOMES_DIAS[selectedDate.getDay()];
+        renderizarListaDia();
+    }
+    function navegarMes(delta){ currentMonth+=delta; if(currentMonth>11){currentMonth=0;currentYear++;} else if(currentMonth<0){currentMonth=11;currentYear--;} renderizarCalendario(); }
+    document.getElementById('prevMonthBtn').addEventListener('click',function(){ navegarMes(-1); });
+    document.getElementById('nextMonthBtn').addEventListener('click',function(){ navegarMes(1); });
+
+    // AÇÕES GLOBAIS
+    window.atualizarListaDia = function(){ diaSelecionadoLista=document.getElementById('diaSelecionado').value; renderizarListaDia(); };
+    window.limparDestaquesVermelhos = function(){ destaqueVermelho.clear(); renderizarListaSemFolga(); mostrarToast('🧹 Destaques removidos!'); };
+    window.abrirModalAdicionar = function(){
+        var modal=document.getElementById('modalAdicionar'); if(!modal) return;
+        document.getElementById('inputNome').value=''; document.getElementById('inputCor').value='#4b5563';
+        if(modal.showModal) modal.showModal(); else modal.setAttribute('open','true');
+        setTimeout(function(){ document.getElementById('inputNome').focus(); },120);
+    };
+    window.fecharModalAdicionar = function(){ var m=document.getElementById('modalAdicionar'); if(m){ if(m.close)m.close(); else m.removeAttribute('open'); } };
+    window.adicionarFuncionario = function(){
+        var nome=document.getElementById('inputNome').value.trim(), cor=document.getElementById('inputCor').value||'#4b5563';
+        if(!nome){ mostrarToast('⚠️ Informe o nome.'); return; }
+        var dias={}; DIAS.forEach(d=>{ dias[d]={funcao:'',setor:'',folga:false}; });
+        getEscalaAtiva().push({id:gerarId(),nome,cor,dias});
+        salvar(); renderizarTudo(); fecharModalAdicionar(); mostrarToast('✅ Funcionário adicionado!');
+    };
+    window.limparEscalaAtual = function(){
+        if(!confirm('Limpar todos os funcionários de "'+getTituloAtivo()+'"?')) return;
+        getEscalaAtiva().forEach(f=>destaqueVermelho.delete(f.id));
+        escalas[escalaAtiva].funcionarios=[]; salvar(); renderizarTudo(); mostrarToast('🧹 Escala limpa.');
+    };
+    window.iniciarEdicaoTitulo = function(){
+        var display=document.getElementById('escalaTituloDisplay'), input=document.createElement('input');
+        input.type='text'; input.value=getTituloAtivo(); input.className='escala-title-input';
+        input.onblur=function(){ var novo=input.value.trim()||('Escala '+(escalaAtiva+1)); escalas[escalaAtiva].titulo=novo; salvar(); renderizarTudo(); mostrarToast('✏️ Título atualizado!'); };
+        input.onkeydown=function(e){ if(e.key==='Enter'||e.key==='Escape') input.blur(); };
+        display.innerHTML=''; display.appendChild(input); input.focus(); input.select();
+    };
+    window.toggleFolga = function(funcId, dia){
+        var func = getEscalaAtiva().find(f=>f.id===funcId); if(!func) return;
+        if(!func.dias) func.dias={};
+        var estado = func.dias[dia] ? func.dias[dia].folga : false;
+        if(estado){ func.dias[dia]={funcao:'',setor:'',folga:false}; mostrarToast('🔄 Folga removida!'); }
+        else { func.dias[dia]={funcao:'',setor:'',folga:true}; mostrarToast('🏖️ Folga marcada!'); }
+        salvar(); renderizarTudo();
+    };
+    window.iniciarEdicao = function(funcId, dia){
+        var func = getEscalaAtiva().find(f=>f.id===funcId); if(!func||(func.dias[dia]&&func.dias[dia].folga)) return;
+        var cell=document.getElementById('cell-'+funcId+'-'+dia), edit=document.getElementById('edit-'+funcId+'-'+dia);
+        if(!cell||!edit) return;
+        cell.style.display='none'; edit.style.display='flex';
+        var d = func.dias&&func.dias[dia]?func.dias[dia]:{funcao:'',setor:''};
+        edit.innerHTML = '<input type="text" id="f-'+funcId+'-'+dia+'" value="'+esc(d.funcao)+'" placeholder="Função"><input type="text" id="s-'+funcId+'-'+dia+'" value="'+esc(d.setor)+'" placeholder="Setor"><div class="edit-actions"><button class="btn btn-primary btn-xs" onclick="window.salvarEdicao(\''+funcId+'\',\''+dia+'\')">✓</button><button class="btn btn-outline btn-xs" onclick="window.cancelarEdicao()">✕</button><button class="btn btn-xs" style="background:#fbbf24;color:#000;" onclick="window.toggleFolga(\''+funcId+'\',\''+dia+'\')">🏖️</button></div>';
+        setTimeout(function(){ var inp=document.getElementById('f-'+funcId+'-'+dia); if(inp)inp.focus(); },60);
+    };
+    window.salvarEdicao = function(funcId, dia){
+        var func = getEscalaAtiva().find(f=>f.id===funcId); if(!func) return;
+        var f=document.getElementById('f-'+funcId+'-'+dia), s=document.getElementById('s-'+funcId+'-'+dia);
+        if(!func.dias) func.dias={};
+        func.dias[dia] = {funcao:f?f.value.trim():'', setor:s?s.value.trim():'', folga:false};
+        salvar(); renderizarTudo(); mostrarToast('✅ Alteração salva!');
+    };
+    window.cancelarEdicao = function(){ renderizarTabela(); };
+    window.removerFunc = function(funcId){
+        if(!confirm('Remover este funcionário?')) return;
+        escalas[escalaAtiva].funcionarios = getEscalaAtiva().filter(f=>f.id!==funcId);
+        destaqueVermelho.delete(funcId); salvar(); renderizarTudo(); mostrarToast('🗑️ Funcionário removido.');
+    };
+    window.abrirColorPicker = function(e,id){ e.stopPropagation(); var p=document.getElementById('colorPicker-'+id); if(p)p.click(); };
+    window.alterarCor = function(id,cor){ var f=getEscalaAtiva().find(x=>x.id===id); if(f){f.cor=cor;salvar();renderizarTabela();mostrarToast('🎨 Cor alterada!');} };
+    function mostrarToast(msg){
+        var t=document.getElementById('toast'); if(!t) return;
+        t.textContent=msg; t.classList.add('show'); clearTimeout(t._timeout);
+        t._timeout=setTimeout(function(){t.classList.remove('show');},2600);
+    }
+
+    // TEMA DOTS
+    document.querySelectorAll('.theme-dot').forEach(dot=>{
+        dot.addEventListener('click', function(){
+            var novoTema = this.dataset.theme;
+            if(novoTema && novoTema!==getTemaAtivo()){
+                escalas[escalaAtiva].tema = novoTema;
+                salvar(); aplicarTema(novoTema);
+                document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active', d.dataset.theme===novoTema));
+                mostrarToast('🎨 Tema alterado para '+novoTema+'!');
             }
-            function iniciarEscalasDemo() {
-                const anaDias = {}; DIAS_SEMANA.forEach((d,i)=>{ anaDias[d] = { funcao: i<5?'Atendente':'', setor: i<5?'Recepção':'', folga: i>=5 }; });
-                const carlosDias = {}; DIAS_SEMANA.forEach((d,i)=>{ carlosDias[d] = { funcao: i<6?'Supervisor':'', setor: i<6?'Logística':'', folga: i===6 }; });
-                const robertoDias = {}; DIAS_SEMANA.forEach((d,i)=>{ robertoDias[d] = { funcao: i<5?'Motorista':'', setor: i<5?'Transporte':'', folga: i>=5 }; });
-                escalas = [
-                    { titulo:'Setor Administrativo', tema:'azul', funcionarios:[
-                        { id:gerarId(), nome:'Ana Costa', cor:'#3b82f6', dias: anaDias },
-                        { id:gerarId(), nome:'Carlos Mendes', cor:'#60a5fa', dias: carlosDias }
-                    ]},
-                    { titulo:'Setor de Transporte', tema:'verde', funcionarios:[
-                        { id:gerarId(), nome:'Roberto Alves', cor:'#10b981', dias: robertoDias }
-                    ]},
-                    { titulo:'Escala 3', tema:'preto', funcionarios:[] },
-                    { titulo:'Escala 4', tema:'azul', funcionarios:[] },
-                    { titulo:'Escala 5', tema:'verde', funcionarios:[] }
-                ];
-                salvarDados();
-            }
+        });
+    });
 
-            function aplicarTema(nome) {
-                const t = TEMAS[nome] || TEMAS['preto'];
-                const root = document.documentElement;
-                root.style.setProperty('--bg-base', t.bgBase); root.style.setProperty('--bg-sidebar', t.bgSidebar);
-                root.style.setProperty('--bg-card', t.bgCard); root.style.setProperty('--bg-table', t.bgTable);
-                root.style.setProperty('--bg-input', t.bgInput); root.style.setProperty('--color-primary', t.colorPrimary);
-                root.style.setProperty('--gradient-primary', t.gradientPrimary); root.style.setProperty('--gradient-sidebar', t.gradientSidebar);
-                root.style.setProperty('--border-active', t.borderActive); root.style.setProperty('--cell-hover-bg', t.cellHoverBg);
-                root.style.setProperty('--cell-hover-border', t.cellHoverBorder); root.style.setProperty('--weekend-col-text', t.weekendColText);
-                root.style.setProperty('--weekend-bg', t.weekendBg); root.style.setProperty('--weekend-header-bg', t.weekendHeaderBg);
-                root.style.setProperty('--weekend-header-border', t.weekendHeaderBorder);
-            }
-            function atualizarDotsTema() {
-                document.querySelectorAll('.theme-dot').forEach(d=> d.classList.toggle('active', d.dataset.theme === getTemaAtivo()));
-            }
+    // FECHAR MODAL
+    document.getElementById('modalAdicionar').addEventListener('click', function(e){ if(e.target===this) fecharModalAdicionar(); });
 
-            function renderizarSidebar() {
-                const nav = document.getElementById('sidebarNav');
-                if (!nav) return;
-                nav.innerHTML = '';
-                escalas.forEach((esc, i) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'nav-item' + (i===escalaAtivaIndex?' active':'');
-                    btn.innerHTML = `📅 ${escapeHtml(esc.titulo)} <span class="badge">${esc.funcionarios.length}</span>`;
-                    btn.onclick = () => { escalaAtivaIndex = i; renderizarTudo(); mostrarToast('📅 '+getTituloAtivo()); };
-                    nav.appendChild(btn);
-                });
-            }
-            function renderizarTituloEscala() {
-                const el = document.getElementById('tituloTexto');
-                if (el) el.textContent = getTituloAtivo();
-            }
-            function renderizarTabela() {
-                const tbody = document.getElementById('corpoTabela');
-                const vazio = document.getElementById('estadoVazio');
-                if (!tbody || !vazio) return;
-                const funcs = getEscalaAtiva();
-                if (!funcs.length) { tbody.innerHTML=''; vazio.style.display='block'; return; }
-                vazio.style.display='none';
-                tbody.innerHTML = funcs.map(f=>{
-                    const cor = f.cor||'#4b5563';
-                    const diasHtml = DIAS_SEMANA.map((dia,i)=>{
-                        const d = (f.dias && f.dias[dia]) ? f.dias[dia] : { funcao:'', setor:'', folga:false };
-                        const wc = i>=5?' weekend-col':'';
-                        if (d.folga) return `<td class="${wc}"><div class="cell-display folga" onclick="window.toggleFolga('${f.id}','${dia}')"><span class="cell-folga-badge">🏖️ Folga</span></div></td>`;
-                        return `<td class="${wc}"><div class="cell-display colorido" style="--cor-func:${cor}" onclick="window.iniciarEdicao('${f.id}','${dia}')"><span class="cell-funcao">${escapeHtml(d.funcao||'—')}</span><span class="cell-setor">${escapeHtml(d.setor||'—')}</span></div><div class="edit-inline" id="edit-${f.id}-${dia}" style="display:none;"></div></td>`;
-                    }).join('');
-                    return `<tr><td><div class="cor-container"><button class="cor-btn" style="--cor-atual:${cor}" onclick="window.abrirColorPicker(event,'${f.id}')"></button><input type="color" id="colorPicker-${f.id}" value="${cor}" style="position:absolute;opacity:0;width:0;height:0;" onchange="window.alterarCorFuncionario('${f.id}',this.value)"></div><span>${escapeHtml(f.nome)}</span><button class="delete-func-btn" onclick="window.removerFuncionario('${f.id}')">✕</button></td>${diasHtml}</tr>`;
-                }).join('');
-            }
-            function renderizarListaDia() {
-                const container = document.getElementById('listaFuncionariosDia');
-                if (!container) return;
-                const dia = diaSelecionadoLista;
-                const trabalhando = getEscalaAtiva().filter(f=> {
-                    const d = (f.dias && f.dias[dia]) ? f.dias[dia] : { folga: false };
-                    return !d.folga;
-                });
-                container.innerHTML = trabalhando.length ? trabalhando.map(f=>`<div class="funcionario-dia-item">${escapeHtml(f.nome)}</div>`).join('') : '<div class="nenhum-funcionario">Nenhum funcionário na casa</div>';
-            }
-            function renderizarListaSemFolga() {
-                const container = document.getElementById('listaFuncionariosSemFolga');
-                if (!container) return;
-                const semFolga = getEscalaAtiva().filter(f=>!DIAS_SEMANA.some(d=> {
-                    const diaData = (f.dias && f.dias[d]) ? f.dias[d] : { folga: false };
-                    return diaData.folga;
-                }));
-                if (!semFolga.length) { container.innerHTML = '<div class="nenhum-funcionario">Todos têm folga</div>'; return; }
-                container.innerHTML = semFolga.map(f=>`<div class="funcionario-sem-folga-item${destaqueVermelho.has(f.id)?' destacado-vermelho':''}" data-id="${f.id}">${escapeHtml(f.nome)}</div>`).join('');
-                container.querySelectorAll('.funcionario-sem-folga-item').forEach(el=>{
-                    el.addEventListener('dblclick', function(e){
-                        e.stopPropagation();
-                        const id = this.dataset.id;
-                        destaqueVermelho.has(id) ? destaqueVermelho.delete(id) : destaqueVermelho.add(id);
-                        this.classList.toggle('destacado-vermelho');
-                    });
-                });
-            }
-            function renderizarTudo() {
-                aplicarTema(getTemaAtivo());
-                atualizarDotsTema();
-                renderizarSidebar();
-                renderizarTituloEscala();
-                renderizarTabela();
-                renderCalendar();
-                updateDayFromCalendar();
-                renderizarListaSemFolga();
-            }
-
-            function renderCalendar() {
-                const grid = document.getElementById('calendarGrid');
-                const monthYear = document.getElementById('calendarMonthYear');
-                if (!grid || !monthYear) return;
-                const year = currentYear, month = currentMonth;
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const today = new Date();
-                const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-                const selectedStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
-                monthYear.textContent = `${MESES[month]} ${year}`;
-                grid.innerHTML = '';
-                NOMES_DIAS_CURTOS.forEach(d => { const div=document.createElement('div'); div.className='calendar-day-name'; div.textContent=d; grid.appendChild(div); });
-                const prevMonthDays = new Date(year, month, 0).getDate();
-                for (let i=firstDay-1; i>=0; i--) { const day=prevMonthDays-i; const div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=day; grid.appendChild(div); }
-                for (let day=1; day<=daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                    const feriado = obterFeriado(date);
-                    const div = document.createElement('div'); div.className='calendar-day'; div.textContent=day;
-                    if (dateStr===todayStr) div.classList.add('today');
-                    if (dateStr===selectedStr) div.classList.add('selected');
-                    if (feriado) { div.classList.add('feriado'); div.title=feriado.nome; }
-                    div.addEventListener('click', ()=>{ selectedDate=new Date(year,month,day); renderCalendar(); updateDayFromCalendar(); });
-                    grid.appendChild(div);
-                }
-                const totalCells = firstDay+daysInMonth;
-                const remaining = 7 - (totalCells%7);
-                if (remaining<7) for (let i=1; i<=remaining; i++) { const div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=i; grid.appendChild(div); }
-                const feriadoSel = obterFeriado(selectedDate);
-                const feriadoInfo = document.getElementById('feriadoInfo');
-                if (feriadoInfo) feriadoInfo.textContent = feriadoSel ? '🏖️ '+feriadoSel.nome : '';
-            }
-            function updateDayFromCalendar() {
-                const diaSemana = DIAS_SEMANA[selectedDate.getDay()===0?6:selectedDate.getDay()-1];
-                diaSelecionadoLista = diaSemana;
-                const diaSelect = document.getElementById('diaSelecionado');
-                if (diaSelect) diaSelect.value = diaSemana;
-                const diaIndicador = document.getElementById('diaSemanaIndicador');
-                if (diaIndicador) diaIndicador.textContent = NOMES_DIAS[selectedDate.getDay()];
-                renderizarListaDia();
-            }
-            function navigateMonth(delta) { currentMonth+=delta; if(currentMonth>11){currentMonth=0;currentYear++;} else if(currentMonth<0){currentMonth=11;currentYear--;} renderCalendar(); }
-            document.getElementById('prevMonthBtn')?.addEventListener('click', ()=>navigateMonth(-1));
-            document.getElementById('nextMonthBtn')?.addEventListener('click', ()=>navigateMonth(1));
-            function setInitialDate() { selectedDate=new Date(); currentMonth=selectedDate.getMonth(); currentYear=selectedDate.getFullYear(); renderCalendar(); updateDayFromCalendar(); }
-
-            // Funções globais
-            window.atualizarListaDia = function() { diaSelecionadoLista=document.getElementById('diaSelecionado')?.value || 'seg'; renderizarListaDia(); };
-            window.limparDestaquesVermelhos = function() { destaqueVermelho.clear(); renderizarListaSemFolga(); mostrarToast('🧹 Destaques removidos!'); };
-
-            window.abrirModalAdicionar = function() {
-                const modal = document.getElementById('modalAdicionar');
-                if (!modal) return;
-                document.getElementById('inputNome').value = '';
-                document.getElementById('inputCor').value = '#4b5563';
-                if (modal.showModal) modal.showModal(); else modal.setAttribute('open', 'true');
-                setTimeout(()=> document.getElementById('inputNome')?.focus(), 120);
-            };
-            window.fecharModalAdicionar = function() {
-                const modal = document.getElementById('modalAdicionar');
-                if (!modal) return;
-                if (modal.close) modal.close(); else modal.removeAttribute('open');
-            };
-            window.adicionarFuncionario = function() {
-                const nome = document.getElementById('inputNome')?.value.trim();
-                const cor = document.getElementById('inputCor')?.value || '#4b5563';
-                if (!nome) { mostrarToast('⚠️ Informe o nome.'); return; }
-                const dias = {};
-                DIAS_SEMANA.forEach(d=>{ dias[d] = { funcao:'', setor:'', folga:false }; });
-                const novo = { id: gerarId(), nome, cor, dias };
-                getEscalaAtiva().push(novo);
-                salvarDados(); renderizarTudo(); window.fecharModalAdicionar(); mostrarToast('✅ Funcionário adicionado!');
-            };
-            window.limparEscalaAtual = function() {
-                if (!confirm(`Limpar todos os funcionários de "${getTituloAtivo()}"?`)) return;
-                getEscalaAtiva().forEach(f=>destaqueVermelho.delete(f.id));
-                escalas[escalaAtivaIndex].funcionarios = [];
-                salvarDados(); renderizarTudo(); mostrarToast('🧹 Escala limpa.');
-            };
-            window.iniciarEdicaoTitulo = function() {
-                const display = document.getElementById('escalaTituloDisplay');
-                if (!display) return;
-                const input = document.createElement('input');
-                input.type='text'; input.value=getTituloAtivo(); input.className='escala-title-input';
-                input.onblur = () => {
-                    const novo = input.value.trim() || ('Escala '+(escalaAtivaIndex+1));
-                    escalas[escalaAtivaIndex].titulo = novo;
-                    salvarDados(); renderizarTudo(); mostrarToast('✏️ Título atualizado!');
-                };
-                input.onkeydown = e => { if (e.key==='Enter'||e.key==='Escape') input.blur(); };
-                display.innerHTML=''; display.appendChild(input); input.focus(); input.select();
-            };
-
-            window.iniciarEdicao = function(funcId, dia) {
-                const func = getEscalaAtiva().find(f=>f.id===funcId);
-                if (!func || (func.dias[dia]?.folga)) return;
-                const cell = document.getElementById(`cell-${funcId}-${dia}`);
-                const edit = document.getElementById(`edit-${funcId}-${dia}`);
-                if (!cell || !edit) return;
-                cell.style.display='none'; edit.style.display='flex';
-                edit.innerHTML = `<input type="text" id="inputFuncao-${funcId}-${dia}" value="${escapeHtml(func.dias[dia]?.funcao||'')}" placeholder="Função"><input type="text" id="inputSetor-${funcId}-${dia}" value="${escapeHtml(func.dias[dia]?.setor||'')}" placeholder="Setor"><div class="edit-actions"><button class="btn btn-primary btn-xs" onclick="window.salvarEdicao('${funcId}','${dia}')">✓</button><button class="btn btn-outline btn-xs" onclick="window.cancelarEdicao('${funcId}','${dia}')">✕</button><button class="btn btn-xs" style="background:#fbbf24;color:#000;" onclick="window.marcarFolga('${funcId}','${dia}')">🏖️</button></div>`;
-                setTimeout(()=> document.getElementById(`inputFuncao-${funcId}-${dia}`)?.focus(), 60);
-            };
-            window.salvarEdicao = function(funcId, dia) {
-                const func = getEscalaAtiva().find(f=>f.id===funcId);
-                if (!func) return;
-                const f = document.getElementById(`inputFuncao-${funcId}-${dia}`);
-                const s = document.getElementById(`inputSetor-${funcId}-${dia}`);
-                if (func.dias) func.dias[dia] = { funcao: f?.value.trim()||'', setor: s?.value.trim()||'', folga:false };
-                salvarDados(); renderizarTudo(); mostrarToast('✅ Alteração salva!');
-            };
-            window.cancelarEdicao = function() { renderizarTabela(); };
-            window.marcarFolga = function(funcId, dia) {
-                const func = getEscalaAtiva().find(f=>f.id===funcId);
-                if (!func) return;
-                if (func.dias) func.dias[dia] = { funcao:'', setor:'', folga:true };
-                salvarDados(); renderizarTudo(); mostrarToast('🏖️ Folga marcada!');
-            };
-            window.toggleFolga = function(funcId, dia) {
-                const func = getEscalaAtiva().find(f=>f.id===funcId);
-                if (!func) return;
-                if (func.dias) func.dias[dia] = { funcao:'', setor:'', folga:false };
-                salvarDados(); renderizarTudo(); mostrarToast('🔄 Folga removida!');
-            };
-            window.removerFuncionario = function(funcId) {
-                if (!confirm('Remover este funcionário?')) return;
-                escalas[escalaAtivaIndex].funcionarios = getEscalaAtiva().filter(f=>f.id!==funcId);
-                destaqueVermelho.delete(funcId);
-                salvarDados(); renderizarTudo(); mostrarToast('🗑️ Funcionário removido.');
-            };
-            window.abrirColorPicker = (e, id) => { e.stopPropagation(); document.getElementById('colorPicker-'+id)?.click(); };
-            window.alterarCorFuncionario = function(id, cor) {
-                const func = getEscalaAtiva().find(f=>f.id===id);
-                if (func) { func.cor = cor; salvarDados(); renderizarTabela(); mostrarToast('🎨 Cor alterada!'); }
-            };
-
-            function mostrarToast(msg) {
-                const toast = document.getElementById('toast');
-                if (!toast) return;
-                toast.textContent = msg; toast.classList.add('show');
-                clearTimeout(toast._timeout);
-                toast._timeout = setTimeout(()=> toast.classList.remove('show'), 2600);
-            }
-
-            document.getElementById('modalAdicionar')?.addEventListener('click', function(e) {
-                if (e.target === this) window.fecharModalAdicionar();
-            });
-
-            // Inicialização final
-            carregarDados();
-            setInitialDate();
-            renderizarTudo();
-            console.log('✅ Escala pronta para uso');
-        })();
-    </script>
+    // INICIAR
+    carregar();
+    selectedDate = new Date(); currentMonth = selectedDate.getMonth(); currentYear = selectedDate.getFullYear();
+    renderizarTudo();
+})();
+</script>
 </body>
 </html>

@@ -316,9 +316,9 @@
         ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d=>{ var div=document.createElement('div'); div.className='calendar-day-name'; div.textContent=d; grid.appendChild(div); });
         var prevDays=new Date(y,m,0).getDate();
         for(var i=firstDay-1;i>=0;i--){ var div=document.createElement('div'); div.className='calendar-day other-month'; div.textContent=prevDays-i; grid.appendChild(div); }
-        for(var day=1;day<=daysInMonth;day++){
-            var date=new Date(y,m,day), dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-            var feriado=obterFeriado(date), div=document.createElement('div'); div.className='calendar-day'; div.textContent=day;
+        for(let day=1;day<=daysInMonth;day++){
+            let date=new Date(y,m,day), dateStr=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+            let feriado=obterFeriado(date), div=document.createElement('div'); div.className='calendar-day'; div.textContent=day;
             if(dateStr===todayStr) div.classList.add('today');
             if(dateStr===selStr) div.classList.add('selected');
             if(feriado){ div.classList.add('feriado'); div.title=feriado.n; }
@@ -336,7 +336,7 @@
         document.getElementById('diaSemanaIndicador').textContent=NOMES_DIAS[selectedDate.getDay()];
         renderizarListaDia();
     }
-    function navegarMes(delta){ currentMonth+=delta; if(currentMonth>11){currentMonth=0;currentYear++;} else if(currentMonth<0){currentMonth=11;currentYear--;} renderizarCalendario(); }
+    function navegarMes(delta){ currentMonth+=delta; if(currentMonth>11){currentMonth=0;currentYear++;} else if(currentMonth<0){currentMonth=11;currentYear--;} renderizarTudo(); }
     document.getElementById('prevMonthBtn').addEventListener('click',function(){ navegarMes(-1); });
     document.getElementById('nextMonthBtn').addEventListener('click',function(){ navegarMes(1); });
 

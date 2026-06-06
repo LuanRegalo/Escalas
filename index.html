@@ -79,14 +79,13 @@
 
         .table-container { flex:1; overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-table); }
         table { width:100%; border-collapse:collapse; min-width:800px; font-size:0.85rem; }
-        tbody td { padding:6px 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; }
-        tbody td:first-child { text-align:left; padding-left:20px; font-weight:600; display:flex; align-items:center; gap:10px; min-height:48px; }
+        tbody td { padding:0 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; height:60px; }
+        tbody td:first-child { text-align:left; padding-left:20px; font-weight:600; }
         .cell-display { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; padding:10px 6px; border-radius:6px; min-width:60px; background:rgba(255,255,255,0.03); border:1px solid transparent; transition:all var(--transition); }
         .cell-display:hover { background:var(--cell-hover-bg); border-color:var(--cell-hover-border); transform:scale(1.03); }
         .cell-display.folga { background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.4); }
         .cell-dia { font-weight:600; font-size:0.8rem; color:var(--text-primary); }
         .cell-folga-text { font-weight:700; font-size:0.75rem; color:#10b981; display:flex; flex-direction:column; align-items:center; gap:2px; }
-        .cell-display.colorido { background-color:var(--cor-func); }
 
         .delete-func-btn {
             background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.9rem; padding:2px 4px; border-radius:3px; margin-left:auto; opacity:0; transition:opacity 0.2s, color 0.2s;
@@ -94,7 +93,6 @@
         tbody tr:hover .delete-func-btn { opacity:1; }
         .delete-func-btn:hover { color:#ef4444; background:rgba(239,68,68,0.1); }
 
-        .cor-btn { background:var(--cor-atual); border:2px solid rgba(255,255,255,0.3); width:28px; height:28px; border-radius:50%; cursor:pointer; }
         .empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); }
 
         dialog { border:none; border-radius:var(--radius-md); padding:0; box-shadow:0 0 40px rgba(0,0,0,0.8); max-width:500px; width:92%; background:var(--bg-card); color:#fff; }
@@ -177,13 +175,12 @@
     </main>
 </div>
 
-<!-- Modal Adicionar Funcionário -->
+<!-- Modal Adicionar Funcionário (sem cor) -->
 <dialog id="modalAdicionar">
     <div class="modal-content">
         <h2>👤 Novo Funcionário</h2>
         <div style="display:flex; flex-direction:column; gap:16px;">
             <div><label>Nome completo</label><input type="text" id="inputNome" placeholder="Ex: Maria Silva"></div>
-            <div><label>Cor de destaque</label><div style="display:flex;align-items:center;gap:10px;"><input type="color" id="inputCor" value="#4b5563"><span style="font-size:0.8rem;color:var(--text-muted);">Fundo das células</span></div></div>
             <p style="font-size:0.75rem;color:var(--text-muted);">💡 Pressione Enter para adicionar rapidamente. Clique nas células para alternar folga.</p>
         </div>
         <div class="modal-actions">
@@ -305,8 +302,8 @@
         var aD={}, cD={}, rD={};
         DIAS.forEach(d=>{ aD[d]={folga: d==='sab'||d==='dom'}; cD[d]={folga: d==='dom'}; rD[d]={folga: d==='sab'||d==='dom'}; });
         escalas=[
-            {titulo:'Setor Administrativo',tema:'azul',emoji:'📋',funcionarios:[{id:gerarId(),nome:'Ana Costa',cor:'#3b82f6',dias:aD},{id:gerarId(),nome:'Carlos Mendes',cor:'#60a5fa',dias:cD}]},
-            {titulo:'Setor de Transporte',tema:'verde',emoji:'🚚',funcionarios:[{id:gerarId(),nome:'Roberto Alves',cor:'#10b981',dias:rD}]},
+            {titulo:'Setor Administrativo',tema:'azul',emoji:'📋',funcionarios:[{id:gerarId(),nome:'Ana Costa',dias:aD},{id:gerarId(),nome:'Carlos Mendes',dias:cD}]},
+            {titulo:'Setor de Transporte',tema:'verde',emoji:'🚚',funcionarios:[{id:gerarId(),nome:'Roberto Alves',dias:rD}]},
             {titulo:'Escala 3',tema:'preto',emoji:'🍣',funcionarios:[]},
             {titulo:'Escala 4',tema:'azul',emoji:'🍳',funcionarios:[]},
             {titulo:'Escala 5',tema:'verde',emoji:'👨‍🍳',funcionarios:[]}
@@ -352,13 +349,12 @@
         if(!funcs.length){ tbody.innerHTML=''; vazio.style.display='block'; return; }
         vazio.style.display='none';
         tbody.innerHTML = funcs.map(f=>{
-            var cor = f.cor||'#4b5563';
             var diasHtml = DIAS.map(dia=>{
                 var d = f.dias&&f.dias[dia] ? f.dias[dia] : {folga:false};
                 if(d.folga) return '<td><div class="cell-display folga" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-folga-text">FOLGA<br>🏖️</span></div></td>';
-                return '<td><div class="cell-display colorido" style="--cor-func:'+cor+'" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-dia">'+DIAS_ABREVIADOS[dia]+'</span></div></td>';
+                return '<td><div class="cell-display" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-dia">'+DIAS_ABREVIADOS[dia]+'</span></div></td>';
             }).join('');
-            return '<tr><td><div class="cor-container"><button class="cor-btn" style="--cor-atual:'+cor+'" onclick="window.abrirColorPicker(event,\''+f.id+'\')"></button><input type="color" id="colorPicker-'+f.id+'" value="'+cor+'" style="position:absolute;opacity:0;width:0;height:0;" onchange="window.alterarCor(\''+f.id+'\',this.value)"></div><span>'+escHtml(f.nome)+'</span><button class="delete-func-btn" onclick="window.removerFunc(\''+f.id+'\')">✕</button></td>'+diasHtml+'</tr>';
+            return '<tr><td>'+escHtml(f.nome)+'<button class="delete-func-btn" onclick="window.removerFunc(\''+f.id+'\')">✕</button></td>'+diasHtml+'</tr>';
         }).join('');
     }
 
@@ -424,16 +420,16 @@
     window.limparDestaquesVermelhos = function(){ destaqueVermelho.clear(); renderizarListaSemFolga(); mostrarToast('🧹 Destaques removidos!'); };
     window.abrirModalAdicionar = function(){
         var modal=document.getElementById('modalAdicionar'); if(!modal) return;
-        document.getElementById('inputNome').value=''; document.getElementById('inputCor').value='#4b5563';
+        document.getElementById('inputNome').value='';
         if(modal.showModal) modal.showModal(); else modal.setAttribute('open','true');
         setTimeout(function(){ document.getElementById('inputNome').focus(); },120);
     };
     window.fecharModalAdicionar = function(){ var m=document.getElementById('modalAdicionar'); if(m){ if(m.close)m.close(); else m.removeAttribute('open'); } };
     window.adicionarFuncionario = function(){
-        var nome=document.getElementById('inputNome').value.trim(), cor=document.getElementById('inputCor').value||'#4b5563';
+        var nome=document.getElementById('inputNome').value.trim();
         if(!nome){ mostrarToast('⚠️ Informe o nome.'); return; }
         var dias={}; DIAS.forEach(d=>{ dias[d]={folga:false}; });
-        getEscalaAtiva().push({id:gerarId(),nome,cor,dias});
+        getEscalaAtiva().push({id:gerarId(),nome,dias});
         salvar(); renderizarTudo(); fecharModalAdicionar(); mostrarToast('✅ Funcionário adicionado!');
     };
     window.limparEscalaAtual = function(){
@@ -476,8 +472,6 @@
         escalas[escalaAtiva].funcionarios = getEscalaAtiva().filter(f=>f.id!==funcId);
         destaqueVermelho.delete(funcId); salvar(); renderizarTudo(); mostrarToast('🗑️ Funcionário removido.');
     };
-    window.abrirColorPicker = function(e,id){ e.stopPropagation(); var p=document.getElementById('colorPicker-'+id); if(p)p.click(); };
-    window.alterarCor = function(id,cor){ var f=getEscalaAtiva().find(x=>x.id===id); if(f){f.cor=cor;salvar();renderizarTabela();mostrarToast('🎨 Cor alterada!');} };
     function mostrarToast(msg){
         var t=document.getElementById('toast'); if(!t) return;
         t.textContent=msg; t.classList.add('show'); clearTimeout(t._timeout);

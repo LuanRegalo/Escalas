@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Trabalho</title>
+    <!-- SheetJS para exportação Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg-base: #0a0a0a; --bg-sidebar: #111111; --bg-card: #1a1a1a; --bg-table: #1a1a1a;
@@ -76,6 +78,8 @@
         .btn-minimal:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.8); }
         .btn-minimal-danger { border-color:rgba(239,68,68,0.08); color:rgba(239,68,68,0.3); }
         .btn-minimal-danger:hover { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3); color:#f87171; }
+        .btn-minimal-export { border-color:rgba(16,185,129,0.08); color:rgba(16,185,129,0.3); }
+        .btn-minimal-export:hover { background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.3); color:#10b981; }
 
         .table-container { flex:1; overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-table); }
         table { width:100%; border-collapse:collapse; min-width:800px; font-size:0.85rem; }
@@ -158,6 +162,7 @@
         <div class="main-header">
             <div class="header-top">
                 <div class="action-buttons">
+                    <button class="btn-minimal btn-minimal-export" onclick="exportarExcel()" title="Exportar para Excel">📥</button>
                     <button class="btn-minimal" onclick="abrirModalAdicionar()" title="Adicionar Funcionário">+</button>
                     <button class="btn-minimal btn-minimal-danger" onclick="limparEscalaAtual()" title="Limpar Escala">🗑</button>
                 </div>
@@ -442,7 +447,6 @@
         escalas[escalaAtiva].funcionarios=[]; salvar(); renderizarTudo(); mostrarToast('🧹 Escala limpa.');
     };
 
-    // Edição da Escala (Nome e Emoji)
     window.abrirModalEditarEscala = function(){
         var modal = document.getElementById('modalEditarEscala');
         if(!modal) return;
@@ -485,6 +489,44 @@
         t._timeout=setTimeout(function(){t.classList.remove('show');},2600);
     }
 
+    // NOVA FUNÇÃO DE EXPORTAÇÃO EXCEL
+    window.exportarExcel = function() {
+        var funcs = getEscalaAtiva();
+        if (funcs.length === 0) {
+            mostrarToast('⚠️ Nenhum funcionário para exportar.');
+            return;
+        }
+        var nomeEscala = getEmojiAtivo() + ' ' + getTituloAtivo();
+        // Monta a matriz de dados
+        var dados = [];
+        // Linha de título
+        dados.push([nomeEscala]);
+        // Linha em branco
+        dados.push([]);
+        // Cabeçalhos
+        var cabecalho = ['Funcionário'];
+        DIAS.forEach(dia => cabecalho.push(DIAS_ABREVIADOS[dia]));
+        dados.push(cabecalho);
+        // Linhas de funcionários
+        funcs.forEach(f => {
+            var linha = [f.nome];
+            DIAS.forEach(dia => {
+                var d = f.dias && f.dias[dia] ? f.dias[dia] : {folga:false};
+                linha.push(d.folga ? 'FOLGA' : DIAS_ABREVIADOS[dia]);
+            });
+            dados.push(linha);
+        });
+        // Cria workbook e planilha
+        var wb = XLSX.utils.book_new();
+        var ws = XLSX.utils.aoa_to_sheet(dados);
+        // Ajusta largura das colunas (opcional)
+        ws['!cols'] = [{wch:25}].concat(DIAS.map(() => ({wch:8})));
+        XLSX.utils.book_append_sheet(wb, ws, nomeEscala);
+        // Dispara download
+        XLSX.writeFile(wb, nomeEscala.replace(/[^a-z0-9]/gi, '_') + '.xlsx');
+        mostrarToast('📥 Escala exportada com sucesso!');
+    };
+
     document.querySelectorAll('.theme-dot').forEach(dot=>{
         dot.addEventListener('click', function(){
             var novoTema = this.dataset.theme;
@@ -500,14 +542,12 @@
     document.getElementById('modalAdicionar').addEventListener('click', function(e){ if(e.target===this) fecharModalAdicionar(); });
     document.getElementById('modalEditarEscala').addEventListener('click', function(e){ if(e.target===this) fecharModalEditarEscala(); });
 
-    // ENTER: abre modal ou adiciona funcionário
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             var modalAdicionar = document.getElementById('modalAdicionar');
             var modalEditar = document.getElementById('modalEditarEscala');
-            // Se o modal de editar escala estiver aberto, não interfere (ele tem seu próprio botão Salvar)
             if (modalEditar && (modalEditar.hasAttribute('open') || modalEditar.open)) {
-                return; // deixa o Enter ser tratado pelo próprio modal (foco no botão Salvar, etc.)
+                return;
             }
             if (modalAdicionar && (modalAdicionar.hasAttribute('open') || modalAdicionar.open)) {
                 e.preventDefault();

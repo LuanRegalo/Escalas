@@ -489,42 +489,105 @@
         t._timeout=setTimeout(function(){t.classList.remove('show');},2600);
     }
 
-    // NOVA FUNÇÃO DE EXPORTAÇÃO EXCEL
+    // ========== FUNÇÃO DE EXPORTAÇÃO EXCEL COM CORES ==========
     window.exportarExcel = function() {
         var funcs = getEscalaAtiva();
         if (funcs.length === 0) {
             mostrarToast('⚠️ Nenhum funcionário para exportar.');
             return;
         }
+
         var nomeEscala = getEmojiAtivo() + ' ' + getTituloAtivo();
-        // Monta a matriz de dados
-        var dados = [];
+        // Função auxiliar: HEX (#RRGGBB) → ARGB (FFRRGGBB)
+        function hexToARGB(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            if (hex.length === 6) hex = 'FF' + hex;
+            return hex;
+        }
+
+        // Monta a matriz de dados (valores brutos)
+        var dadosValores = [];
         // Linha de título
-        dados.push([nomeEscala]);
-        // Linha em branco
-        dados.push([]);
+        dadosValores.push([nomeEscala]);
+        dadosValores.push([]); // linha em branco
         // Cabeçalhos
         var cabecalho = ['Funcionário'];
-        DIAS.forEach(dia => cabecalho.push(DIAS_ABREVIADOS[dia]));
-        dados.push(cabecalho);
+        DIAS.forEach(function(dia) { cabecalho.push(DIAS_ABREVIADOS[dia]); });
+        dadosValores.push(cabecalho);
         // Linhas de funcionários
-        funcs.forEach(f => {
+        funcs.forEach(function(f) {
             var linha = [f.nome];
-            DIAS.forEach(dia => {
-                var d = f.dias && f.dias[dia] ? f.dias[dia] : {folga:false};
+            DIAS.forEach(function(dia) {
+                var d = f.dias && f.dias[dia] ? f.dias[dia] : { folga: false };
                 linha.push(d.folga ? 'FOLGA' : DIAS_ABREVIADOS[dia]);
             });
-            dados.push(linha);
+            dadosValores.push(linha);
         });
-        // Cria workbook e planilha
+
+        // Cria a planilha a partir dos valores
+        var ws = XLSX.utils.aoa_to_sheet(dadosValores);
+
+        // Aplica os estilos (cores de fundo)
+        // Linha 0: título (índice 0)
+        var tituloStyle = { fill: { fgColor: { rgb: "FF333333" } }, font: { bold: true, color: { rgb: "FFFFFFFF" } } };
+        if (ws['A1']) ws['A1'].s = tituloStyle;
+
+        // Linha 2: cabeçalhos (índice 2)
+        var cabecalhoStyle = { fill: { fgColor: { rgb: "FF555555" } }, font: { bold: true, color: { rgb: "FFFFFFFF" } } };
+        for (var col = 0; col < cabecalho.length; col++) {
+            var cellRef = XLSX.utils.encode_cell({ r: 2, c: col });
+            if (ws[cellRef]) ws[cellRef].s = cabecalhoStyle;
+        }
+
+        // Linhas de funcionários (índice 3 em diante)
+        for (var i = 0; i < funcs.length; i++) {
+            var func = funcs[i];
+            var corHex = func.cor || '#4b5563';
+            var corARGB = hexToARGB(corHex);
+            var normalStyle = { fill: { fgColor: { rgb: corARGB } } };
+            var folgaStyle = { fill: { fgColor: { rgb: "FFB7E1CD" } } }; // verde claro
+
+            // Coluna do nome (coluna 0)
+            var nomeCellRef = XLSX.utils.encode_cell({ r: 3 + i, c: 0 });
+            if (ws[nomeCellRef]) ws[nomeCellRef].s = normalStyle;
+
+            // Dias da semana (colunas 1 a 7)
+            for (var j = 0; j < DIAS.length; j++) {
+                var dia = DIAS[j];
+                var d = func.dias && func.dias[dia] ? func.dias[dia] : { folga: false };
+                var cellRef = XLSX.utils.encode_cell({ r: 3 + i, c: 1 + j });
+                if (ws[cellRef]) {
+                    ws[cellRef].s = d.folga ? folgaStyle : normalStyle;
+                }
+            }
+        }
+
+        // Ajusta largura das colunas
+        ws['!cols'] = [{ wch: 25 }].concat(DIAS.map(function() { return { wch: 10 }; }));
+
+        // Cria workbook e adiciona a planilha
         var wb = XLSX.utils.book_new();
-        var ws = XLSX.utils.aoa_to_sheet(dados);
-        // Ajusta largura das colunas (opcional)
-        ws['!cols'] = [{wch:25}].concat(DIAS.map(() => ({wch:8})));
         XLSX.utils.book_append_sheet(wb, ws, nomeEscala);
+
+        // Opções de exportação com estilos
+        var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary', cellStyles: true });
+
         // Dispara download
-        XLSX.writeFile(wb, nomeEscala.replace(/[^a-z0-9]/gi, '_') + '.xlsx');
-        mostrarToast('📥 Escala exportada com sucesso!');
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+        var blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = nomeEscala.replace(/[^a-z0-9]/gi, '_') + '.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        mostrarToast('📥 Escala exportada com cores!');
     };
 
     document.querySelectorAll('.theme-dot').forEach(dot=>{

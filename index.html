@@ -63,33 +63,41 @@
         .escala-title-box:hover { border-color:var(--border-active); background:rgba(255,255,255,0.03); }
         .escala-title-input { background:var(--bg-input); border:1px solid var(--border-active); border-radius:var(--radius-sm); padding:6px 12px; font-weight:500; font-size:0.9rem; color:var(--text-primary); outline:none; text-align:center; width:100%; }
 
-        /* ANOTAÇÃO ESTILO BLOCO DE NOTAS */
-        .anotacao-display {
-            background: rgba(255,255,255,0.02);
+        /* BLOCO DE NOTAS INLINE */
+        .anotacao-container {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .anotacao-container label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .anotacao-textarea {
+            width: 100%;
+            background: var(--bg-input);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
             padding: 10px 14px;
-            margin-top: 8px;
             font-size: 0.8rem;
             font-family: 'Courier New', 'Consolas', monospace;
-            color: var(--text-secondary);
-            cursor: pointer;
-            min-height: 60px;
-            max-height: 200px;
-            overflow-y: auto;
-            text-align: left;
-            white-space: pre-wrap;
-            word-break: break-word;
+            color: var(--text-primary);
             line-height: 1.5;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color var(--transition);
         }
-        .anotacao-display:hover {
+        .anotacao-textarea:focus {
             border-color: var(--border-active);
-            background: rgba(255,255,255,0.03);
+            outline: none;
         }
-        .anotacao-display.vazia {
+        .anotacao-textarea::placeholder {
             color: var(--text-muted);
             font-style: italic;
-            font-family: var(--font-sans);
         }
 
         .btn-minimal {
@@ -118,22 +126,18 @@
 
         .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:0.8rem; }
 
-        dialog { border:none; border-radius:var(--radius-md); padding:0; box-shadow:0 0 30px rgba(0,0,0,0.7); max-width:500px; width:92%; background:var(--bg-card); color:var(--text-primary); }
+        dialog { border:none; border-radius:var(--radius-md); padding:0; box-shadow:0 0 30px rgba(0,0,0,0.7); max-width:400px; width:92%; background:var(--bg-card); color:var(--text-primary); }
         dialog::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
         .modal-content { padding:20px; }
         .modal-content h2 { font-size:1.1rem; font-weight:600; margin-bottom:16px; }
-        .modal-content input, .modal-content textarea { width:100%; padding:8px 10px; border:1.5px solid var(--border-subtle); border-radius:4px; font-size:0.85rem; background:var(--bg-input); color:var(--text-primary); }
-        .modal-content textarea { resize: vertical; min-height: 150px; font-family: 'Courier New', 'Consolas', monospace; line-height: 1.5; }
+        .modal-content input { width:100%; padding:8px 10px; border:1.5px solid var(--border-subtle); border-radius:4px; font-size:0.85rem; background:var(--bg-input); color:var(--text-primary); }
         .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:20px; }
         .btn { padding:6px 12px; border-radius:4px; font-weight:500; font-size:0.8rem; cursor:pointer; border:none; }
         .btn-primary { background:var(--color-primary); color:#fff; }
         .btn-outline { background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary); }
-        .btn-sm { padding:2px 8px; font-size:0.7rem; }
         .toast { position:fixed; bottom:20px; right:20px; background:var(--bg-card); color:var(--text-primary); padding:10px 18px; border-radius:6px; font-weight:500; z-index:999; opacity:0; transform:translateY(10px); transition:0.3s; pointer-events:none; border:1px solid var(--border-active); font-size:0.8rem; }
         .toast.show { opacity:1; transform:translateY(0); }
         .emoji-input { font-size:1.2rem; text-align:center; width:60px; }
-        .anotacao-header { display:flex; justify-content:space-between; align-items:center; }
-        .btn-limpar-anotacao { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:#fca5a5; padding:2px 5px; border-radius:3px; font-size:0.55rem; cursor:pointer; }
     </style>
 </head>
 <body>
@@ -176,7 +180,7 @@
                 <div class="theme-dot" data-theme="preto" style="background:#1f1f1f;" title="Preto"></div>
             </div>
         </div>
-        <div class="sidebar-footer"><p>Escala · v2.0</p></div>
+        <div class="sidebar-footer"><p>Escala · v3.0</p></div>
     </aside>
 
     <main class="main-content">
@@ -188,11 +192,9 @@
                 </div>
             </div>
             <div class="escala-title-section">
-                <div class="escala-title-box" id="escalaTituloDisplay" onclick="abrirModalEditarEscala('nome')">
+                <div class="escala-title-box" id="escalaTituloDisplay" onclick="abrirModalEditarEscala()">
                     <span id="tituloTexto"></span>
                 </div>
-                <!-- Bloco de notas da escala -->
-                <div class="anotacao-display" id="anotacaoDisplay" onclick="abrirModalEditarEscala('anotacao')"></div>
             </div>
         </div>
         <div class="table-container">
@@ -200,6 +202,16 @@
                 <tbody id="corpoTabela"></tbody>
             </table>
             <div class="empty-state" id="estadoVazio"><span class="icon">📭</span><p><strong>Nenhum funcionário nesta escala</strong></p><p>Adicione funcionários para começar.</p></div>
+        </div>
+
+        <!-- Bloco de notas editável inline -->
+        <div class="anotacao-container">
+            <label>📝 Bloco de Notas</label>
+            <textarea
+                id="anotacaoTextarea"
+                class="anotacao-textarea"
+                placeholder="Escreva suas observações, lembretes ou informações importantes..."
+            ></textarea>
         </div>
     </main>
 </div>
@@ -224,13 +236,6 @@
         <div style="display:flex; flex-direction:column; gap:12px;">
             <div><label>Nome da Escala</label><input type="text" id="inputEscalaNome" placeholder="Nome da escala"></div>
             <div><label>Emoji</label><input type="text" id="inputEscalaEmoji" class="emoji-input" placeholder="📅" maxlength="4"></div>
-            <div>
-                <div class="anotacao-header">
-                    <label>📝 Bloco de Notas</label>
-                    <button class="btn-limpar-anotacao" onclick="limparAnotacao()">🧹 Limpar</button>
-                </div>
-                <textarea id="inputEscalaAnotacao" placeholder="Escreva suas observações, lembretes ou informações importantes... (Ctrl+Enter para salvar)"></textarea>
-            </div>
         </div>
         <div class="modal-actions">
             <button class="btn btn-outline" onclick="fecharModalEditarEscala()">Cancelar</button>
@@ -269,6 +274,7 @@
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
     const destaqueVermelho = new Set();
+    let saveTimeout = null;
 
     function gerarId() { return 'f'+Date.now()+Math.random().toString(36).substr(2,7); }
     function salvar() { localStorage.setItem(STORAGE_KEY, JSON.stringify(escalas)); }
@@ -384,14 +390,27 @@
 
     function renderizarAnotacao() {
         var anotacao = getAnotacaoAtiva();
-        var display = document.getElementById('anotacaoDisplay');
-        if (anotacao.trim() !== '') {
-            display.textContent = anotacao;
-            display.classList.remove('vazia');
-        } else {
-            display.textContent = '📝 Nenhuma anotação. Clique para adicionar...';
-            display.classList.add('vazia');
+        var textarea = document.getElementById('anotacaoTextarea');
+        if (textarea) {
+            textarea.value = anotacao;
         }
+    }
+
+    function salvarAnotacao() {
+        var textarea = document.getElementById('anotacaoTextarea');
+        if (textarea) {
+            escalas[escalaAtiva].anotacao = textarea.value;
+            salvar();
+        }
+    }
+
+    function iniciarSalvamentoAutomatico() {
+        var textarea = document.getElementById('anotacaoTextarea');
+        if (!textarea) return;
+        textarea.addEventListener('input', function() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(salvarAnotacao, 600);
+        });
     }
 
     function renderizarSidebar() {
@@ -501,19 +520,13 @@
         escalas[escalaAtiva].funcionarios=[]; salvar(); renderizarTudo(); mostrarToast('🧹 Escala limpa.');
     };
 
-    // NOVA VERSÃO: abrirModalEditarEscala com parâmetro de foco
-    window.abrirModalEditarEscala = function(foco = 'nome'){
+    window.abrirModalEditarEscala = function(){
         var modal = document.getElementById('modalEditarEscala');
         if(!modal) return;
         document.getElementById('inputEscalaNome').value = getTituloAtivo();
         document.getElementById('inputEscalaEmoji').value = getEmojiAtivo();
-        document.getElementById('inputEscalaAnotacao').value = getAnotacaoAtiva();
         if(modal.showModal) modal.showModal(); else modal.setAttribute('open','true');
-        if (foco === 'anotacao') {
-            setTimeout(function(){ document.getElementById('inputEscalaAnotacao').focus(); },120);
-        } else {
-            setTimeout(function(){ document.getElementById('inputEscalaNome').focus(); },120);
-        }
+        setTimeout(function(){ document.getElementById('inputEscalaNome').focus(); },120);
     };
     window.fecharModalEditarEscala = function(){
         var m = document.getElementById('modalEditarEscala');
@@ -522,16 +535,10 @@
     window.salvarEdicaoEscala = function(){
         var nome = document.getElementById('inputEscalaNome').value.trim();
         var emoji = document.getElementById('inputEscalaEmoji').value.trim() || '📅';
-        var anotacao = document.getElementById('inputEscalaAnotacao').value;
         if(!nome){ mostrarToast('⚠️ Informe o nome da escala.'); return; }
         escalas[escalaAtiva].titulo = nome;
         escalas[escalaAtiva].emoji = emoji;
-        escalas[escalaAtiva].anotacao = anotacao;
         salvar(); renderizarTudo(); fecharModalEditarEscala(); mostrarToast('✏️ Escala atualizada!');
-    };
-    window.limparAnotacao = function(){
-        document.getElementById('inputEscalaAnotacao').value = '';
-        document.getElementById('inputEscalaAnotacao').focus();
     };
 
     window.toggleFolga = function(funcId, dia){
@@ -569,17 +576,8 @@
     document.getElementById('modalAdicionar').addEventListener('click', function(e){ if(e.target===this) fecharModalAdicionar(); });
     document.getElementById('modalEditarEscala').addEventListener('click', function(e){ if(e.target===this) fecharModalEditarEscala(); });
 
-    // Atalho Ctrl+Enter para salvar edição da escala
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
-            var modalEditar = document.getElementById('modalEditarEscala');
-            if (modalEditar && (modalEditar.hasAttribute('open') || modalEditar.open)) {
-                e.preventDefault();
-                window.salvarEdicaoEscala();
-                return;
-            }
-        }
-        if (e.key === 'Enter' && !e.ctrlKey) {
+        if (e.key === 'Enter') {
             var modalAdicionar = document.getElementById('modalAdicionar');
             var modalEditar = document.getElementById('modalEditarEscala');
             if (modalEditar && (modalEditar.hasAttribute('open') || modalEditar.open)) {
@@ -601,6 +599,7 @@
     carregar();
     selectedDate = new Date(); currentMonth = selectedDate.getMonth(); currentYear = selectedDate.getFullYear();
     renderizarTudo();
+    iniciarSalvamentoAutomatico();
 })();
 </script>
 </body>

@@ -6,119 +6,101 @@
     <title>Escala de Trabalho</title>
     <style>
         :root {
-            --bg-base: #0a0a0a; --bg-sidebar: #111111; --bg-card: #1a1a1a; --bg-table: #1a1a1a;
-            --bg-input: #2a2a2a; --color-primary: #6b7280; --gradient-primary: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
-            --gradient-sidebar: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
-            --text-primary: #f5f5f5; --text-secondary: #a0a0a0; --text-muted: #707070;
-            --border-subtle: rgba(255,255,255,0.08); --border-active: #6b7280;
-            --nav-active-bg: rgba(255,255,255,0.08); --nav-hover-bg: rgba(255,255,255,0.05);
-            --cell-hover-bg: rgba(255,255,255,0.08); --cell-hover-border: #6b7280;
-            --weekend-col-text: #d1d5db; --weekend-bg: rgba(30,30,30,0.5);
-            --weekend-header-bg: rgba(30,30,30,0.9); --weekend-header-border: rgba(255,255,255,0.15);
-            --shadow-card: 0 8px 32px rgba(0,0,0,0.6); --radius-lg: 16px; --radius-md: 12px; --radius-sm: 8px;
-            --transition: 0.25s; --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            --bg-base: #121212; --bg-sidebar: #1a1a1a; --bg-card: #1e1e1e; --bg-table: #1a1a1a;
+            --bg-input: #2a2a2a; --color-primary: #888888; --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa; --text-muted: #888888;
+            --border-subtle: rgba(255,255,255,0.05); --border-active: #666666;
+            --nav-active-bg: rgba(255,255,255,0.05); --nav-hover-bg: rgba(255,255,255,0.03);
+            --cell-hover-bg: rgba(255,255,255,0.05); --cell-hover-border: #666666;
+            --weekend-col-text: #cccccc; --weekend-bg: rgba(30,30,30,0.3);
+            --weekend-header-bg: rgba(30,30,30,0.5); --weekend-header-border: rgba(255,255,255,0.08);
+            --shadow-card: none; --radius-lg: 8px; --radius-md: 6px; --radius-sm: 4px;
+            --transition: 0.2s ease; --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font-sans); background:var(--bg-base); color:var(--text-primary); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:16px; }
-        .app-shell { display:flex; width:100%; max-width:1500px; min-height:90vh; background:rgba(20,20,20,0.6); backdrop-filter:blur(18px); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card), 0 0 0 1px var(--border-subtle); }
-        .sidebar { width:300px; background:var(--gradient-sidebar); padding:32px 20px 20px; display:flex; flex-direction:column; border-right:1px solid var(--border-subtle); flex-shrink:0; overflow-y:auto; }
-        .sidebar-header { margin-bottom:24px; }
-        .sidebar-logo { font-size:1.6rem; font-weight:800; color:#fff; }
-        .sidebar-nav { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
-        .nav-item { display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; color:var(--text-secondary); cursor:pointer; transition:all var(--transition); border:1px solid transparent; background:transparent; }
-        .nav-item:hover { background:var(--nav-hover-bg); border-color:rgba(255,255,255,0.15); color:#fff; }
-        .nav-item.active { background:var(--nav-active-bg); border-color:var(--border-active); color:#fff; }
-        .badge { margin-left:auto; background:rgba(255,255,255,0.15); color:#f5f5f5; font-size:0.7rem; padding:2px 10px; border-radius:20px; }
-        .calendario-section, .dia-selector-section, .sem-folga-section, .theme-selector { margin-top:16px; padding-top:12px; border-top:1px solid var(--border-subtle); }
-        label { font-size:0.7rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:8px; }
-        .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-        .calendar-month-year { font-weight:600; font-size:0.9rem; color:var(--text-primary); }
-        .calendar-nav-btn { background:var(--bg-input); border:1px solid var(--border-subtle); color:var(--text-primary); border-radius:4px; padding:4px 8px; cursor:pointer; font-size:0.8rem; }
-        .calendar-nav-btn:hover { background:rgba(255,255,255,0.1); border-color:var(--border-active); }
-        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; text-align:center; font-size:0.7rem; }
-        .calendar-day-name { font-weight:600; color:var(--text-muted); padding:4px 0; }
-        .calendar-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:4px; cursor:pointer; background:rgba(255,255,255,0.03); color:var(--text-secondary); }
-        .calendar-day:hover { background:rgba(255,255,255,0.1); color:#fff; }
-        .calendar-day.today { border:1px solid var(--border-active); font-weight:700; color:#fff; }
+        body { font-family:var(--font-sans); background:var(--bg-base); color:var(--text-primary); display:flex; justify-content:center; align-items:center; min-height:100vh; padding:12px; }
+        .app-shell { display:flex; width:100%; max-width:1300px; min-height:90vh; background:var(--bg-card); border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border-subtle); }
+        .sidebar { width:240px; background:var(--bg-sidebar); padding:20px 16px 16px; display:flex; flex-direction:column; border-right:1px solid var(--border-subtle); flex-shrink:0; overflow-y:auto; }
+        .sidebar-header { margin-bottom:16px; }
+        .sidebar-logo { font-size:1.3rem; font-weight:600; color:var(--text-primary); }
+        .sidebar-nav { display:flex; flex-direction:column; gap:3px; margin-bottom:12px; }
+        .nav-item { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:var(--radius-sm); font-weight:500; font-size:0.8rem; color:var(--text-secondary); cursor:pointer; transition:all var(--transition); border:1px solid transparent; background:transparent; }
+        .nav-item:hover { background:var(--nav-hover-bg); border-color:var(--border-subtle); color:var(--text-primary); }
+        .nav-item.active { background:var(--nav-active-bg); border-color:var(--border-active); color:var(--text-primary); }
+        .badge { margin-left:auto; background:rgba(255,255,255,0.08); color:var(--text-secondary); font-size:0.65rem; padding:1px 6px; border-radius:10px; }
+        .calendario-section, .dia-selector-section, .sem-folga-section, .theme-selector { margin-top:12px; padding-top:8px; border-top:1px solid var(--border-subtle); }
+        label { font-size:0.65rem; font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:4px; }
+        .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+        .calendar-month-year { font-weight:500; font-size:0.75rem; color:var(--text-primary); }
+        .calendar-nav-btn { background:var(--bg-input); border:1px solid var(--border-subtle); color:var(--text-secondary); border-radius:3px; padding:2px 6px; cursor:pointer; font-size:0.7rem; }
+        .calendar-nav-btn:hover { background:rgba(255,255,255,0.05); border-color:var(--border-active); color:var(--text-primary); }
+        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; text-align:center; font-size:0.6rem; }
+        .calendar-day-name { font-weight:500; color:var(--text-muted); padding:2px 0; }
+        .calendar-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:3px; cursor:pointer; background:rgba(255,255,255,0.02); color:var(--text-secondary); }
+        .calendar-day:hover { background:rgba(255,255,255,0.08); color:var(--text-primary); }
+        .calendar-day.today { border:1px solid var(--border-active); font-weight:600; color:var(--text-primary); }
         .calendar-day.selected { background:var(--border-active); color:#fff; }
-        .calendar-day.other-month { color:rgba(255,255,255,0.15); pointer-events:none; }
-        .calendar-day.feriado { background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.5); }
-        .calendar-day.comemorativa { background:rgba(244,114,182,0.2); color:#f472b6; border:1px solid rgba(244,114,182,0.5); }
-        .calendar-day.feriado.today { border:2px solid #fbbf24; }
-        .calendar-day.comemorativa.today { border:2px solid #f472b6; }
-        .calendar-day.feriado.selected { background:#fbbf24; color:#000; }
-        .calendar-day.comemorativa.selected { background:#f472b6; color:#000; }
-        .feriado-info { margin-top:4px; font-size:0.7rem; color:#fbbf24; text-align:center; min-height:16px; }
-        .comemorativa-info { margin-top:2px; font-size:0.7rem; color:#f472b6; text-align:center; min-height:16px; }
-        select { width:100%; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:#fff; font-size:0.85rem; cursor:pointer; }
-        .funcionarios-dia-lista, .funcionarios-sem-folga-lista { margin-top:10px; max-height:150px; overflow-y:auto; }
-        .funcionario-dia-item, .funcionario-sem-folga-item { padding:6px 10px; margin-bottom:4px; background:rgba(255,255,255,0.03); border-radius:6px; font-size:0.8rem; border-left:3px solid var(--border-active); }
-        .funcionario-sem-folga-item.destacado-vermelho { color:#ef4444 !important; background:rgba(239,68,68,0.15); border-left-color:#ef4444; }
-        .btn-limpar-vermelhos { background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:2px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer; }
-        .theme-options { display:flex; gap:6px; }
-        .theme-dot { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
-        .theme-dot.active { border-color:#fff; box-shadow:0 0 10px currentColor; }
-        .sidebar-footer { margin-top:auto; font-size:0.75rem; color:var(--text-muted); text-align:center; padding-top:16px; border-top:1px solid var(--border-subtle); }
+        .calendar-day.other-month { color:rgba(255,255,255,0.1); pointer-events:none; }
+        .calendar-day.feriado { background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .calendar-day.comemorativa { background:rgba(244,114,182,0.15); color:#f472b6; border:1px solid rgba(244,114,182,0.3); }
+        .feriado-info, .comemorativa-info { margin-top:2px; font-size:0.6rem; text-align:center; min-height:12px; }
+        select { width:100%; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); color:var(--text-primary); font-size:0.75rem; cursor:pointer; }
+        .funcionarios-dia-lista, .funcionarios-sem-folga-lista { margin-top:6px; max-height:120px; overflow-y:auto; }
+        .funcionario-dia-item, .funcionario-sem-folga-item { padding:4px 8px; margin-bottom:2px; background:rgba(255,255,255,0.02); border-radius:3px; font-size:0.75rem; border-left:2px solid var(--border-active); }
+        .funcionario-sem-folga-item.destacado-vermelho { color:#ef4444 !important; background:rgba(239,68,68,0.1); border-left-color:#ef4444; }
+        .btn-limpar-vermelhos { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:#fca5a5; padding:2px 5px; border-radius:3px; font-size:0.55rem; cursor:pointer; }
+        .theme-options { display:flex; gap:5px; }
+        .theme-dot { width:18px; height:18px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
+        .theme-dot.active { border-color:var(--text-primary); }
+        .sidebar-footer { margin-top:auto; font-size:0.65rem; color:var(--text-muted); text-align:center; padding-top:10px; border-top:1px solid var(--border-subtle); }
 
-        .main-content { flex:1; display:flex; flex-direction:column; padding:28px 24px 20px; overflow-x:hidden; }
-        .main-header { margin-bottom:16px; }
-        .header-top { display:flex; justify-content:flex-end; margin-bottom:8px; }
-        .action-buttons { display:flex; gap:6px; }
+        .main-content { flex:1; display:flex; flex-direction:column; padding:16px 14px 12px; overflow-x:hidden; }
+        .main-header { margin-bottom:10px; }
+        .header-top { display:flex; justify-content:flex-end; margin-bottom:4px; }
+        .action-buttons { display:flex; gap:3px; }
         .escala-title-section { width:100%; }
-        .escala-title-box { background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px 20px; font-weight:700; font-size:1.1rem; color:#fff; cursor:pointer; text-align:center; }
-        .escala-title-box:hover { border-color:var(--border-active); background:rgba(255,255,255,0.05); }
-        .escala-title-input { background:var(--bg-input); border:1px solid var(--border-active); border-radius:var(--radius-sm); padding:10px 16px; font-weight:700; font-size:1.1rem; color:#fff; outline:none; text-align:center; width:100%; }
+        .escala-title-box { background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:6px 12px; font-weight:500; font-size:0.9rem; color:var(--text-primary); cursor:pointer; text-align:center; }
+        .escala-title-box:hover { border-color:var(--border-active); background:rgba(255,255,255,0.03); }
+        .escala-title-input { background:var(--bg-input); border:1px solid var(--border-active); border-radius:var(--radius-sm); padding:6px 12px; font-weight:500; font-size:0.9rem; color:var(--text-primary); outline:none; text-align:center; width:100%; }
 
         .btn-minimal {
-            background:transparent; border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.25);
-            padding:4px 8px; font-size:0.8rem; border-radius:4px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:2px;
+            background:transparent; border:1px solid rgba(255,255,255,0.06); color:rgba(255,255,255,0.3);
+            padding:2px 6px; font-size:0.7rem; border-radius:3px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:1px;
         }
-        .btn-minimal:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.8); }
-        .btn-minimal-danger { border-color:rgba(239,68,68,0.08); color:rgba(239,68,68,0.3); }
-        .btn-minimal-danger:hover { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3); color:#f87171; }
+        .btn-minimal:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.15); color:rgba(255,255,255,0.8); }
+        .btn-minimal-danger { border-color:rgba(239,68,68,0.1); color:rgba(239,68,68,0.3); }
+        .btn-minimal-danger:hover { background:rgba(239,68,68,0.05); border-color:rgba(239,68,68,0.3); color:#f87171; }
 
         .table-container { flex:1; overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-table); }
-        table { width:100%; border-collapse:collapse; min-width:800px; font-size:0.85rem; }
-        tbody td { padding:0 8px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:middle; height:60px; }
-        tbody td:first-child { text-align:left; padding-left:20px; font-weight:600; }
-        .cell-display { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; padding:10px 6px; border-radius:6px; min-width:60px; border:1px solid transparent; transition:all var(--transition); }
-        .cell-display:hover { background:var(--cell-hover-bg); border-color:var(--cell-hover-border); transform:scale(1.03); }
-        /* NOVA COR LARANJA PARA FOLGA */
-        .cell-display.folga {
-            background: rgba(255, 165, 0, 0.25);
-            border-color: rgba(255, 165, 0, 0.5);
-        }
-        .cell-dia { font-weight:600; font-size:0.8rem; }
-        .cell-folga-text {
-            font-weight:700;
-            font-size:0.75rem;
-            color:#000;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:2px;
-        }
+        table { width:100%; border-collapse:collapse; min-width:700px; font-size:0.75rem; }
+        tbody td { padding:0 6px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; height:40px; }
+        tbody td:first-child { text-align:left; padding-left:14px; font-weight:500; }
+        .cell-display { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; cursor:pointer; padding:4px 4px; border-radius:4px; min-width:50px; border:1px solid transparent; transition:all var(--transition); }
+        .cell-display:hover { background:var(--cell-hover-bg); border-color:var(--cell-hover-border); }
+        .cell-display.folga { background:rgba(255,165,0,0.15); border-color:rgba(255,165,0,0.3); }
+        .cell-dia { font-weight:500; font-size:0.7rem; }
+        .cell-folga-text { font-weight:600; font-size:0.65rem; color:#ffa500; display:flex; flex-direction:column; align-items:center; gap:1px; }
 
         .delete-func-btn {
-            background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.9rem; padding:2px 4px; border-radius:3px; margin-left:auto; opacity:0; transition:opacity 0.2s, color 0.2s;
+            background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.8rem; padding:1px 3px; border-radius:3px; margin-left:auto; opacity:0; transition:opacity 0.2s, color 0.2s;
         }
         tbody tr:hover .delete-func-btn { opacity:1; }
         .delete-func-btn:hover { color:#ef4444; background:rgba(239,68,68,0.1); }
 
-        .empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); }
+        .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); font-size:0.8rem; }
 
-        dialog { border:none; border-radius:var(--radius-md); padding:0; box-shadow:0 0 40px rgba(0,0,0,0.8); max-width:500px; width:92%; background:var(--bg-card); color:#fff; }
+        dialog { border:none; border-radius:var(--radius-md); padding:0; box-shadow:0 0 30px rgba(0,0,0,0.7); max-width:400px; width:92%; background:var(--bg-card); color:var(--text-primary); }
         dialog::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
-        .modal-content { padding:28px; }
-        .modal-content h2 { font-size:1.3rem; font-weight:700; margin-bottom:20px; }
-        .modal-content input { width:100%; padding:10px 14px; border:1.5px solid var(--border-subtle); border-radius:6px; font-size:0.9rem; background:var(--bg-input); color:#fff; }
-        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
-        .btn { padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer; border:none; }
+        .modal-content { padding:20px; }
+        .modal-content h2 { font-size:1.1rem; font-weight:600; margin-bottom:16px; }
+        .modal-content input { width:100%; padding:8px 10px; border:1.5px solid var(--border-subtle); border-radius:4px; font-size:0.85rem; background:var(--bg-input); color:var(--text-primary); }
+        .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:20px; }
+        .btn { padding:6px 12px; border-radius:4px; font-weight:500; font-size:0.8rem; cursor:pointer; border:none; }
         .btn-primary { background:var(--color-primary); color:#fff; }
         .btn-outline { background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary); }
-        .toast { position:fixed; bottom:28px; right:28px; background:var(--bg-card); color:#fff; padding:14px 24px; border-radius:8px; font-weight:600; z-index:999; opacity:0; transform:translateY(20px); transition:0.3s; pointer-events:none; border:1px solid var(--border-active); }
+        .toast { position:fixed; bottom:20px; right:20px; background:var(--bg-card); color:var(--text-primary); padding:10px 18px; border-radius:6px; font-weight:500; z-index:999; opacity:0; transform:translateY(10px); transition:0.3s; pointer-events:none; border:1px solid var(--border-active); font-size:0.8rem; }
         .toast.show { opacity:1; transform:translateY(0); }
-        .emoji-input { font-size:1.5rem; text-align:center; width:80px; }
+        .emoji-input { font-size:1.2rem; text-align:center; width:60px; }
     </style>
 </head>
 <body>
@@ -190,9 +172,9 @@
 <dialog id="modalAdicionar">
     <div class="modal-content">
         <h2>👤 Novo Funcionário</h2>
-        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
             <div><label>Nome completo</label><input type="text" id="inputNome" placeholder="Ex: Maria Silva"></div>
-            <p style="font-size:0.75rem;color:var(--text-muted);">💡 Pressione Enter para adicionar rapidamente. Clique nas células para alternar folga.</p>
+            <p style="font-size:0.7rem;color:var(--text-muted);">💡 Pressione Enter para adicionar rapidamente. Clique nas células para alternar folga.</p>
         </div>
         <div class="modal-actions">
             <button class="btn btn-outline" onclick="fecharModalAdicionar()">Cancelar</button>
@@ -204,7 +186,7 @@
 <dialog id="modalEditarEscala">
     <div class="modal-content">
         <h2>✏️ Editar Escala</h2>
-        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
             <div><label>Nome da Escala</label><input type="text" id="inputEscalaNome" placeholder="Nome da escala"></div>
             <div><label>Emoji</label><input type="text" id="inputEscalaEmoji" class="emoji-input" placeholder="📅" maxlength="4"></div>
         </div>
@@ -226,7 +208,6 @@
     const NUM_ESCALAS = 5;
     const STORAGE_KEY = 'escala_trabalho_feriados_v5';
 
-    // Cores de destaque por tema
     const CORES_TEMA = {
         verde: { bg: '#064e3b', text: '#ffffff' },
         azul:  { bg: '#1e3a8a', text: '#ffffff' },
@@ -255,9 +236,7 @@
     function getTemaAtivo() { return escalas[escalaAtiva]?.tema || 'preto'; }
     function escHtml(str) { var d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
 
-    function getCorDia() {
-        return CORES_TEMA[getTemaAtivo()] || CORES_TEMA['preto'];
-    }
+    function getCorDia() { return CORES_TEMA[getTemaAtivo()] || CORES_TEMA['preto']; }
 
     function pascoa(ano) { var a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1; return new Date(ano,month-1,day); }
     function segundoDomingo(mes, ano) { var d=new Date(ano,mes-1,1); var diaSemana=d.getDay(); var diasAteDomingo=diaSemana===0?0:7-diaSemana; var segundoDom=1+diasAteDomingo+7; return segundoDom; }
@@ -373,7 +352,7 @@
         tbody.innerHTML = funcs.map(f=>{
             var diasHtml = DIAS.map(dia=>{
                 var d = f.dias&&f.dias[dia] ? f.dias[dia] : {folga:false};
-                if(d.folga) return '<td><div class="cell-display folga" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-folga-text">FOLGA<br>🏖️</span></div></td>';
+                if(d.folga) return '<td><div class="cell-display folga" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-folga-text">FOLGA</span></div></td>';
                 return '<td><div class="cell-display" style="background-color:' + corDia.bg + '; color:' + corDia.text + ';" onclick="window.toggleFolga(\''+f.id+'\',\''+dia+'\')"><span class="cell-dia">'+DIAS_ABREVIADOS[dia]+'</span></div></td>';
             }).join('');
             return '<tr><td>'+escHtml(f.nome)+'<button class="delete-func-btn" onclick="window.removerFunc(\''+f.id+'\')">✕</button></td>'+diasHtml+'</tr>';

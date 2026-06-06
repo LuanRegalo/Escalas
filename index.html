@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Trabalho</title>
-    <!-- SheetJS para exportação Excel -->
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg-base: #0a0a0a; --bg-sidebar: #111111; --bg-card: #1a1a1a; --bg-table: #1a1a1a;
@@ -78,8 +76,6 @@
         .btn-minimal:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); color:rgba(255,255,255,0.8); }
         .btn-minimal-danger { border-color:rgba(239,68,68,0.08); color:rgba(239,68,68,0.3); }
         .btn-minimal-danger:hover { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.3); color:#f87171; }
-        .btn-minimal-export { border-color:rgba(16,185,129,0.08); color:rgba(16,185,129,0.3); }
-        .btn-minimal-export:hover { background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.3); color:#10b981; }
 
         .table-container { flex:1; overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-table); }
         table { width:100%; border-collapse:collapse; min-width:800px; font-size:0.85rem; }
@@ -162,7 +158,6 @@
         <div class="main-header">
             <div class="header-top">
                 <div class="action-buttons">
-                    <button class="btn-minimal btn-minimal-export" onclick="exportarExcel()" title="Exportar para Excel">📥</button>
                     <button class="btn-minimal" onclick="abrirModalAdicionar()" title="Adicionar Funcionário">+</button>
                     <button class="btn-minimal btn-minimal-danger" onclick="limparEscalaAtual()" title="Limpar Escala">🗑</button>
                 </div>
@@ -488,107 +483,6 @@
         t.textContent=msg; t.classList.add('show'); clearTimeout(t._timeout);
         t._timeout=setTimeout(function(){t.classList.remove('show');},2600);
     }
-
-    // ========== FUNÇÃO DE EXPORTAÇÃO EXCEL COM CORES ==========
-    window.exportarExcel = function() {
-        var funcs = getEscalaAtiva();
-        if (funcs.length === 0) {
-            mostrarToast('⚠️ Nenhum funcionário para exportar.');
-            return;
-        }
-
-        var nomeEscala = getEmojiAtivo() + ' ' + getTituloAtivo();
-        // Função auxiliar: HEX (#RRGGBB) → ARGB (FFRRGGBB)
-        function hexToARGB(hex) {
-            hex = hex.replace('#', '');
-            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-            if (hex.length === 6) hex = 'FF' + hex;
-            return hex;
-        }
-
-        // Monta a matriz de dados (valores brutos)
-        var dadosValores = [];
-        // Linha de título
-        dadosValores.push([nomeEscala]);
-        dadosValores.push([]); // linha em branco
-        // Cabeçalhos
-        var cabecalho = ['Funcionário'];
-        DIAS.forEach(function(dia) { cabecalho.push(DIAS_ABREVIADOS[dia]); });
-        dadosValores.push(cabecalho);
-        // Linhas de funcionários
-        funcs.forEach(function(f) {
-            var linha = [f.nome];
-            DIAS.forEach(function(dia) {
-                var d = f.dias && f.dias[dia] ? f.dias[dia] : { folga: false };
-                linha.push(d.folga ? 'FOLGA' : DIAS_ABREVIADOS[dia]);
-            });
-            dadosValores.push(linha);
-        });
-
-        // Cria a planilha a partir dos valores
-        var ws = XLSX.utils.aoa_to_sheet(dadosValores);
-
-        // Aplica os estilos (cores de fundo)
-        // Linha 0: título (índice 0)
-        var tituloStyle = { fill: { fgColor: { rgb: "FF333333" } }, font: { bold: true, color: { rgb: "FFFFFFFF" } } };
-        if (ws['A1']) ws['A1'].s = tituloStyle;
-
-        // Linha 2: cabeçalhos (índice 2)
-        var cabecalhoStyle = { fill: { fgColor: { rgb: "FF555555" } }, font: { bold: true, color: { rgb: "FFFFFFFF" } } };
-        for (var col = 0; col < cabecalho.length; col++) {
-            var cellRef = XLSX.utils.encode_cell({ r: 2, c: col });
-            if (ws[cellRef]) ws[cellRef].s = cabecalhoStyle;
-        }
-
-        // Linhas de funcionários (índice 3 em diante)
-        for (var i = 0; i < funcs.length; i++) {
-            var func = funcs[i];
-            var corHex = func.cor || '#4b5563';
-            var corARGB = hexToARGB(corHex);
-            var normalStyle = { fill: { fgColor: { rgb: corARGB } } };
-            var folgaStyle = { fill: { fgColor: { rgb: "FFB7E1CD" } } }; // verde claro
-
-            // Coluna do nome (coluna 0)
-            var nomeCellRef = XLSX.utils.encode_cell({ r: 3 + i, c: 0 });
-            if (ws[nomeCellRef]) ws[nomeCellRef].s = normalStyle;
-
-            // Dias da semana (colunas 1 a 7)
-            for (var j = 0; j < DIAS.length; j++) {
-                var dia = DIAS[j];
-                var d = func.dias && func.dias[dia] ? func.dias[dia] : { folga: false };
-                var cellRef = XLSX.utils.encode_cell({ r: 3 + i, c: 1 + j });
-                if (ws[cellRef]) {
-                    ws[cellRef].s = d.folga ? folgaStyle : normalStyle;
-                }
-            }
-        }
-
-        // Ajusta largura das colunas
-        ws['!cols'] = [{ wch: 25 }].concat(DIAS.map(function() { return { wch: 10 }; }));
-
-        // Cria workbook e adiciona a planilha
-        var wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, nomeEscala);
-
-        // Opções de exportação com estilos
-        var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary', cellStyles: true });
-
-        // Dispara download
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-        var blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
-        var link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = nomeEscala.replace(/[^a-z0-9]/gi, '_') + '.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        mostrarToast('📥 Escala exportada com cores!');
-    };
 
     document.querySelectorAll('.theme-dot').forEach(dot=>{
         dot.addEventListener('click', function(){

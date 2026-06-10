@@ -294,6 +294,10 @@
     function gerarFeriados(ano) {
         var p=pascoa(ano),c=new Date(p); c.setDate(c.getDate()-47);
         var corpus=new Date(p); corpus.setDate(corpus.getDate()+60);
+        var carnavalTerca = c.getDate();
+        var carnavalMes = c.getMonth()+1;
+        var carnavalSabado = new Date(c); carnavalSabado.setDate(c.getDate()-3);
+        var carnavalSegunda = new Date(c); carnavalSegunda.setDate(c.getDate()-1);
         return [
             {dia:1,mes:1,nome:'Confraternização Universal',tipo:'feriado'},
             {dia:21,mes:4,nome:'Tiradentes',tipo:'feriado'},
@@ -307,9 +311,11 @@
             {dia:2,mes:2,nome:'Nossa Sra. dos Navegantes',tipo:'feriado'},
             {dia:29,mes:3,nome:'Fundação de Salvador',tipo:'feriado'},
             {dia:4,mes:12,nome:'Santa Bárbara',tipo:'feriado'},
-            {dia:c.getDate(),mes:c.getMonth()+1,nome:'Carnaval',tipo:'feriado'},
+            {dia:carnavalTerca,mes:carnavalMes,nome:'Carnaval (Terça-feira)',tipo:'feriado'},
             {dia:p.getDate(),mes:p.getMonth()+1,nome:'Páscoa',tipo:'feriado'},
-            {dia:corpus.getDate(),mes:corpus.getMonth()+1,nome:'Corpus Christi',tipo:'feriado'}
+            {dia:corpus.getDate(),mes:corpus.getMonth()+1,nome:'Corpus Christi',tipo:'feriado'},
+            // intervalo Carnaval (Sábado, Domingo, Segunda)
+            {diaInicio:carnavalSabado.getDate(),mesInicio:carnavalSabado.getMonth()+1, diaFim:carnavalSegunda.getDate(),mesFim:carnavalSegunda.getMonth()+1, nome:'Carnaval',tipo:'comemorativa'}
         ];
     }
 
@@ -324,18 +330,43 @@
             {dia:15,mes:10,nome:'Dia do Professor',tipo:'comemorativa'},
             {dia:28,mes:10,nome:'Dia do Servidor Público',tipo:'comemorativa'},
             {dia:31,mes:10,nome:'Halloween',tipo:'comemorativa'},
+            {dia:24,mes:6,nome:'São João',tipo:'comemorativa'},
             {dia:24,mes:12,nome:'Véspera de Natal',tipo:'comemorativa'},
-            {dia:31,mes:12,nome:'Réveillon',tipo:'comemorativa'}
+            {dia:31,mes:12,nome:'Réveillon',tipo:'comemorativa'},
+            // período de São João (23 a 25 de junho)
+            {diaInicio:23,mesInicio:6,diaFim:25,mesFim:6,nome:'São João (Festa Junina)',tipo:'comemorativa'}
         ];
     }
 
     function obterDataEspecial(date) {
         var feriados = gerarFeriados(date.getFullYear());
         var comemorativas = gerarDatasComemorativas(date.getFullYear());
-        var f = feriados.find(x=>x.dia===date.getDate() && x.mes===date.getMonth()+1);
-        if (f) return f;
-        var c = comemorativas.find(x=>x.dia===date.getDate() && x.mes===date.getMonth()+1);
-        return c || null;
+        var d = date.getDate();
+        var m = date.getMonth()+1;
+
+        // Verificar intervalos primeiro (tanto feriados quanto comemorativas)
+        var todas = feriados.concat(comemorativas);
+        for (var i = 0; i < todas.length; i++) {
+            var ev = todas[i];
+            if (ev.diaInicio && ev.mesInicio && ev.diaFim && ev.mesFim) {
+                var inicio = new Date(date.getFullYear(), ev.mesInicio-1, ev.diaInicio);
+                var fim = new Date(date.getFullYear(), ev.mesFim-1, ev.diaFim);
+                if (date >= inicio && date <= fim) {
+                    return {nome: ev.nome, tipo: ev.tipo};
+                }
+            }
+        }
+
+        // Datas pontuais
+        for (var i = 0; i < feriados.length; i++) {
+            var f = feriados[i];
+            if (!f.diaInicio && f.dia === d && f.mes === m) return f;
+        }
+        for (var i = 0; i < comemorativas.length; i++) {
+            var cm = comemorativas[i];
+            if (!cm.diaInicio && cm.dia === d && cm.mes === m) return cm;
+        }
+        return null;
     }
 
     function carregar() {

@@ -188,6 +188,7 @@
             <div class="header-top">
                 <div class="action-buttons">
                     <button class="btn-minimal" onclick="abrirModalAdicionar()" title="Adicionar Funcionário">+</button>
+                    <button class="btn-minimal" onclick="limparTodasFolgas()" title="Limpar Todas as Folgas">🔄</button>
                     <button class="btn-minimal btn-minimal-danger" onclick="limparEscalaAtual()" title="Limpar Escala">🗑</button>
                 </div>
             </div>
@@ -518,6 +519,14 @@
         if(!confirm('Limpar todos os funcionários de "'+getTituloAtivo()+'"?')) return;
         getEscalaAtiva().forEach(f=>destaqueVermelho.delete(f.id));
         escalas[escalaAtiva].funcionarios=[]; salvar(); renderizarTudo(); mostrarToast('🧹 Escala limpa.');
+    };
+    window.limparTodasFolgas = function(){
+        if(!confirm('Remover todas as folgas de "'+getTituloAtivo()+'"?')) return;
+        getEscalaAtiva().forEach(f=>{
+            if(!f.dias) f.dias={};
+            DIAS.forEach(d=>{ f.dias[d] = {folga:false}; });
+        });
+        salvar(); renderizarTudo(); mostrarToast('🔄 Todas as folgas removidas!');
     };
 
     window.abrirModalEditarEscala = function(){
